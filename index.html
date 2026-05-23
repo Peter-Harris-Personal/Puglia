@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Puglia 2026 · Harris Family Trip</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   :root {
     --bg: #FBF7F0;
@@ -162,6 +163,41 @@
   .cal-legend i {
     display: inline-block; width: 12px; height: 12px; border-radius: 3px;
   }
+
+  /* MAP */
+  #trip-map {
+    height: 520px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 0;
+  }
+  @media (max-width: 600px) { #trip-map { height: 420px; } }
+  .map-legend {
+    display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 14px;
+    font-size: 12px; color: var(--text-soft);
+  }
+  .map-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .map-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+  .day-pin {
+    color: #fff; border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; font-family: -apple-system, sans-serif;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  }
+  .leaflet-popup-content {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px; line-height: 1.5; margin: 12px 14px;
+  }
+  .leaflet-popup-content .pop-date {
+    color: var(--text-muted); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
+  }
+  .leaflet-popup-content .pop-name {
+    font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 4px;
+  }
+  .leaflet-popup-content .pop-desc { color: var(--text-soft); }
 
   /* ITINERARY */
   .days { display: flex; flex-direction: column; gap: 12px; }
@@ -325,6 +361,7 @@
   <ul>
     <li><a href="#overview">Overview</a></li>
     <li><a href="#calendar">Calendar</a></li>
+    <li><a href="#map">Map</a></li>
     <li><a href="#itinerary">Day by Day</a></li>
     <li><a href="#bookings">Bookings</a></li>
     <li><a href="#dining">Dining Ideas</a></li>
@@ -366,7 +403,7 @@
         <h3>Puglia Villa</h3>
         <div class="dates">Sat 8/22 – Sat 8/29 · 7 nights</div>
         <div class="meta">
-          <div><strong>Lodging:</strong> Villa near Carovigno</div>
+          <div><strong>Lodging:</strong> <a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a></div>
           <div><strong>Travelers:</strong> Peter &amp; Dana, + M&amp;N from 8/23</div>
           <div><strong>Status:</strong> Booked</div>
         </div>
@@ -433,6 +470,19 @@
         <span><i style="background: var(--puglia);"></i> Puglia villa</span>
         <span><i style="background: var(--depart);"></i> Travel / depart</span>
       </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map">
+    <h2>Trip Map</h2>
+    <p class="sub">Every location pinned and labeled by day. Click a pin for details. Scroll to zoom in on the Puglia cluster.</p>
+    <div id="trip-map"></div>
+    <div class="map-legend">
+      <span><i style="background: var(--rome);"></i> Rome (Aug 18-21)</span>
+      <span><i style="background: var(--matera);"></i> Matera (Aug 21-22)</span>
+      <span><i style="background: var(--puglia);"></i> Puglia (Aug 22-29)</span>
+      <span style="color: var(--text-muted);">· number on the pin = day of August</span>
     </div>
   </section>
 
@@ -526,7 +576,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">7:00 AM</div><div class="v">Hike the Murgia Timone trail (~90 min) · belvedere viewpoint across the gravina from the Sassi (the iconic Matera photo)</div></div>
             <div class="row"><div class="k">Morning</div><div class="v">Back to Palazzo Gattini ~9am · breakfast, shower, check out · drive Matera → villa (~1h45)</div></div>
@@ -546,7 +596,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">Early AM</div><div class="v">Leave villa ~5:00am · drive Carovigno → Bari (BRI) ~1h15</div></div>
             <div class="row"><div class="k">Morning</div><div class="v">Mason &amp; Nate land BRI 6:30am (UA 380 from EWR) · drive back to villa</div></div>
@@ -566,7 +616,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">Morning</div><div class="v tbd">TBD · easy at the villa to recover from the redeye</div></div>
             <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD · pool / beach / Torre Guaceto?</div></div>
@@ -585,7 +635,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">Morning</div><div class="v tbd">TBD</div></div>
             <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD</div></div>
@@ -603,7 +653,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">Morning</div><div class="v">Pickup Vespas Ostuni 9:30am · Cisternino 10:25 · Locorotondo 11:15</div></div>
             <div class="row"><div class="k">Afternoon</div><div class="v">Martina Franca 12:15 · Ceglie 1:15pm · return scooters Ostuni ~3:45pm</div></div>
@@ -622,7 +672,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">Morning</div><div class="v">Drive Carovigno → Monopoli (~35 min) · board Mochi 56 flybridge yacht 10:30am</div></div>
             <div class="row"><div class="k">Afternoon</div><div class="v">Full-day charter along Polignano / Monopoli coast · swim stops</div></div>
@@ -641,7 +691,7 @@
           <div class="phase-tag">Puglia</div>
         </div>
         <div class="body">
-          <div class="lodging">Villa (Carovigno)</div>
+          <div class="lodging"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</div>
           <div class="rows">
             <div class="row"><div class="k">Morning</div><div class="v tbd">TBD</div></div>
             <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD</div></div>
@@ -691,7 +741,7 @@
             <div class="meta"><span>8/21–8/22</span><span>· 1 night, Matera</span></div>
           </div>
           <div class="booking confirmed">
-            <div><span class="type-tag">Villa</span><span class="name">Villa near Carovigno</span></div>
+            <div><span class="type-tag">Villa</span><span class="name"><a href="https://pugliaparadise.com/villa/villa-skyler/" target="_blank" rel="noopener">Villa Skyler</a> · Carovigno</span></div>
             <div class="meta"><span>8/22–8/29</span><span>· 7 nights · party of 4</span></div>
           </div>
           <div class="booking confirmed">
@@ -1001,6 +1051,96 @@
   <div>Made with <span class="heart">♥</span> for the Harris family · Puglia 2026</div>
   <div style="margin-top: 6px; font-size: 12px;">Suggestions, swaps, or "let's eat there instead" — tell Peter.</div>
 </footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  const colors = {
+    rome:   '#C26840',
+    matera: '#B89466',
+    puglia: '#3D7A8F'
+  };
+
+  // Approximate coordinates — close enough for trip overview
+  const locations = [
+    // Rome (8/18–21)
+    { lat: 41.8979, lng: 12.4827, day: '18', phase: 'rome',
+      name: 'Six Senses Rome', desc: 'Hotel · 3 nights · arrival 8/18, departure 8/21' },
+    { lat: 41.8985, lng: 12.4818, day: '19', phase: 'rome',
+      name: 'Galleria Doria Pamphilj', desc: '9:30am · then walk Pantheon → Campo de\' Fiori → Monti' },
+
+    // Matera (8/21–22)
+    { lat: 40.6664, lng: 16.6105, day: '21', phase: 'matera',
+      name: 'Palazzo Gattini + Osteria Al Casale', desc: 'Hotel · sunset over the Sassi · 8pm dinner' },
+    { lat: 40.6710, lng: 16.6248, day: '22', phase: 'matera',
+      name: 'Murgia Timone hike', desc: '7am · ~90 min · belvedere across the gravina' },
+
+    // Puglia base (8/22–29)
+    { lat: 40.7360878, lng: 17.6792774, day: '22', phase: 'puglia',
+      name: 'Villa Skyler', desc: 'Base · 7 nights · Carovigno' },
+    { lat: 41.1389, lng: 16.7606, day: '23', phase: 'puglia',
+      name: 'Bari Airport (BRI)', desc: 'M&N arrival 6:30am UA 380 · pickup' },
+
+    // Tue 8/25
+    { lat: 40.7290, lng: 17.5780, day: '25', phase: 'puglia',
+      name: 'Baby Dicecca', desc: 'Lunch · 1:30pm · Ostuni' },
+
+    // Wed 8/26 — Vespa loop
+    { lat: 40.7295, lng: 17.5800, day: '26', phase: 'puglia',
+      name: 'Vespa pickup — Ostuni', desc: '9:30am · RR Scooter Rent · loop start' },
+    { lat: 40.7434, lng: 17.4234, day: '26', phase: 'puglia',
+      name: 'Cisternino', desc: '~10:25am · Vespa stop' },
+    { lat: 40.7558, lng: 17.3267, day: '26', phase: 'puglia',
+      name: 'Locorotondo', desc: '~11:15am · Vespa stop' },
+    { lat: 40.7038, lng: 17.3370, day: '26', phase: 'puglia',
+      name: 'Martina Franca', desc: '~12:15pm · Vespa stop' },
+    { lat: 40.6471, lng: 17.5165, day: '26', phase: 'puglia',
+      name: 'Ceglie Messapica · Osteria Giuseppe', desc: '1:15pm Vespa lunch stop' },
+
+    // Thu 8/27 — Boat day + dinner
+    { lat: 40.9540, lng: 17.3050, day: '27', phase: 'puglia',
+      name: 'Monopoli — boat departure', desc: '10:30am · Mochi 56 yacht (Captain Egidio) · returns 7:30pm' },
+    { lat: 40.7320, lng: 17.5775, day: '27', phase: 'puglia',
+      name: 'Cielo @ Relais La Sommità', desc: 'Dinner · Ostuni (top of town)' },
+
+    // Fri 8/28
+    { lat: 40.7620, lng: 17.5390, day: '28', phase: 'puglia',
+      name: 'Masseria Moroseta', desc: 'Lunch · 1:00pm · north of Ostuni' },
+
+    // Sat 8/29 (depart)
+    { lat: 41.1389, lng: 16.7606, day: '29', phase: 'puglia',
+      name: 'Bari Airport — departure', desc: 'M&N UA 381 9:45am · P&D AZ1612 11:20am' }
+  ];
+
+  const map = L.map('trip-map', { scrollWheelZoom: false }).setView([41.0, 16.5], 7);
+  map.on('click', () => map.scrollWheelZoom.enable());
+  map.on('mouseout', () => map.scrollWheelZoom.disable());
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18
+  }).addTo(map);
+
+  const markers = locations.map(loc => {
+    const icon = L.divIcon({
+      html: '<div class="day-pin" style="background:' + colors[loc.phase] + '">' + loc.day + '</div>',
+      className: '',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -14]
+    });
+    const popupHtml =
+      '<div class="pop-date">Aug ' + loc.day + ' · ' + loc.phase + '</div>' +
+      '<div class="pop-name">' + loc.name + '</div>' +
+      '<div class="pop-desc">' + loc.desc + '</div>';
+    return L.marker([loc.lat, loc.lng], { icon: icon }).addTo(map).bindPopup(popupHtml);
+  });
+
+  // Fit map to show all markers with a little padding
+  const group = L.featureGroup(markers);
+  map.fitBounds(group.getBounds().pad(0.12));
+})();
+</script>
 
 </body>
 </html>
