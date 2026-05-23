@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puglia 2026 · Harris Family Trip</title>
+<style>
+  :root {
+    --bg: #FBF7F0;
+    --bg-card: #FFFFFF;
+    --bg-soft: #F3EDE0;
+    --text: #1F1B16;
+    --text-soft: #5C544A;
+    --text-muted: #8A8077;
+    --line: #E5DDCB;
+    --rome: #C26840;
+    --rome-soft: #F4E2D6;
+    --matera: #B89466;
+    --matera-soft: #EFE3D0;
+    --puglia: #3D7A8F;
+    --puglia-soft: #D9E7EC;
+    --depart: #6B6357;
+    --depart-soft: #E6E1D8;
+    --green: #4A7C3C;
+    --green-soft: #DCE9D2;
+    --amber: #B17A1A;
+    --amber-soft: #F2E4C4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  a { color: var(--puglia); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #C26840 0%, #B89466 45%, #3D7A8F 100%);
+    color: #FFF;
+    padding: 64px 24px 56px;
+    text-align: center;
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .hero-eyebrow {
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+    opacity: 0.9; margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    color: #FFF;
+    margin-bottom: 12px;
+  }
+  .hero-dates {
+    font-size: clamp(16px, 2.2vw, 20px);
+    opacity: 0.95;
+    margin-bottom: 24px;
+  }
+  .hero-meta {
+    display: inline-flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center;
+    font-size: 14px; opacity: 0.92;
+  }
+  .hero-meta span { white-space: nowrap; }
+
+  /* NAV */
+  nav.toc {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(251, 247, 240, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.toc ul {
+    list-style: none; margin: 0; padding: 12px 16px;
+    display: flex; gap: 6px; max-width: 1100px; margin: 0 auto;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    font-size: 14px;
+  }
+  nav.toc a {
+    display: block; padding: 6px 12px; border-radius: 999px;
+    color: var(--text-soft); white-space: nowrap;
+  }
+  nav.toc a:hover { background: var(--bg-soft); color: var(--text); text-decoration: none; }
+
+  /* LAYOUT */
+  main { max-width: 1100px; margin: 0 auto; padding: 8px 24px 80px; }
+  section { padding: 48px 0 8px; }
+  section h2 {
+    font-size: clamp(24px, 3.2vw, 32px);
+    margin-bottom: 6px;
+  }
+  section .sub {
+    color: var(--text-muted); font-size: 14px; margin-bottom: 24px;
+  }
+
+  /* PHASE CARDS */
+  .phases {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .phase {
+    background: var(--bg-card); border-radius: 14px; padding: 22px 22px 20px;
+    box-shadow: var(--shadow); border-top: 4px solid var(--line);
+    display: flex; flex-direction: column;
+  }
+  .phase.rome { border-top-color: var(--rome); }
+  .phase.matera { border-top-color: var(--matera); }
+  .phase.puglia { border-top-color: var(--puglia); }
+  .phase .label {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .phase h3 { font-size: 22px; margin-bottom: 4px; }
+  .phase .dates { color: var(--text-soft); font-size: 14px; margin-bottom: 14px; }
+  .phase .meta { font-size: 13px; color: var(--text-soft); margin-top: auto; }
+  .phase .meta div { padding: 4px 0; border-top: 1px dashed var(--line); }
+  .phase .meta div:first-child { border-top: 0; }
+  .phase .meta strong { color: var(--text); font-weight: 600; }
+
+  /* CALENDAR */
+  .cal-wrap { background: var(--bg-card); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); }
+  .cal-month-label { font-family: Georgia, serif; font-size: 18px; margin-bottom: 12px; color: var(--text-soft); }
+  .cal {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 6px; font-size: 13px;
+  }
+  .cal .dow {
+    text-align: center; font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); padding: 4px 0;
+  }
+  .cal .day {
+    aspect-ratio: 1 / 1; border-radius: 8px; padding: 6px 8px;
+    background: var(--bg-soft); color: var(--text-muted);
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 64px;
+  }
+  .cal .day.empty { background: transparent; }
+  .cal .day.trip { color: var(--text); font-weight: 500; }
+  .cal .day.rome { background: var(--rome-soft); }
+  .cal .day.matera { background: var(--matera-soft); }
+  .cal .day.puglia { background: var(--puglia-soft); }
+  .cal .day.depart { background: var(--depart-soft); }
+  .cal .day .n { font-size: 14px; font-weight: 600; }
+  .cal .day .tag { font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.05em; }
+  .cal-legend {
+    display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 14px;
+    font-size: 12px; color: var(--text-soft);
+  }
+  .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .cal-legend i {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+  }
+
+  /* ITINERARY */
+  .days { display: flex; flex-direction: column; gap: 12px; }
+  .day-card {
+    background: var(--bg-card); border-radius: 12px; padding: 18px 20px;
+    box-shadow: var(--shadow); border-left: 4px solid var(--line);
+    display: grid; grid-template-columns: 110px 1fr; gap: 18px;
+  }
+  .day-card.rome { border-left-color: var(--rome); }
+  .day-card.matera { border-left-color: var(--matera); }
+  .day-card.puglia { border-left-color: var(--puglia); }
+  .day-card.depart { border-left-color: var(--depart); }
+  .day-card .date-block { font-family: Georgia, serif; }
+  .day-card .date-block .dow { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .day-card .date-block .num { font-size: 32px; line-height: 1; margin: 4px 0; }
+  .day-card .date-block .mon { font-size: 13px; color: var(--text-muted); }
+  .day-card .date-block .phase-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--bg-soft); color: var(--text-soft);
+  }
+  .day-card.rome .phase-tag { background: var(--rome-soft); color: var(--rome); }
+  .day-card.matera .phase-tag { background: var(--matera-soft); color: var(--matera); }
+  .day-card.puglia .phase-tag { background: var(--puglia-soft); color: var(--puglia); }
+  .day-card.depart .phase-tag { background: var(--depart-soft); color: var(--depart); }
+
+  .day-card .body { font-size: 14px; }
+  .day-card .lodging { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .day-card .rows { display: grid; gap: 6px; }
+  .day-card .row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; }
+  .day-card .row .k {
+    font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.08em; padding-top: 3px;
+  }
+  .day-card .row .v { color: var(--text-soft); }
+  .day-card .row .v.tbd { color: var(--amber); font-style: italic; }
+  .day-card .notes {
+    margin-top: 10px; font-size: 12px; color: var(--text-muted);
+    border-top: 1px dashed var(--line); padding-top: 8px;
+  }
+  .day-card .notes.confirmed { color: var(--green); font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .day-card { grid-template-columns: 1fr; gap: 12px; }
+    .day-card .date-block { display: flex; align-items: baseline; gap: 8px; }
+    .day-card .date-block .num { font-size: 24px; }
+  }
+
+  /* BOOKINGS */
+  .booking-cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  @media (max-width: 720px) { .booking-cols { grid-template-columns: 1fr; } }
+  .booking-col h3 {
+    font-size: 16px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .booking-col h3 .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .booking-col h3 .dot.green { background: var(--green); }
+  .booking-col h3 .dot.amber { background: var(--amber); }
+  .booking-list { display: flex; flex-direction: column; gap: 8px; }
+  .booking {
+    background: var(--bg-card); border-radius: 10px; padding: 12px 14px;
+    box-shadow: var(--shadow); font-size: 13px;
+    border-left: 3px solid var(--line);
+  }
+  .booking.confirmed { border-left-color: var(--green); }
+  .booking.pending { border-left-color: var(--amber); }
+  .booking .name { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .booking .meta {
+    color: var(--text-muted); font-size: 12px;
+    display: flex; flex-wrap: wrap; gap: 4px 10px;
+  }
+  .booking .type-tag {
+    display: inline-block; font-size: 10px;
+    padding: 1px 7px; border-radius: 999px;
+    background: var(--bg-soft); color: var(--text-soft);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-right: 8px;
+  }
+  .booking .notes { color: var(--text-soft); margin-top: 4px; font-size: 12px; }
+
+  /* IDEAS GRID */
+  .ideas {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .idea {
+    background: var(--bg-card); border-radius: 10px; padding: 14px 16px;
+    box-shadow: var(--shadow); font-size: 13px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .idea .name { font-weight: 600; font-size: 14px; }
+  .idea .where { color: var(--text-muted); font-size: 12px; }
+  .idea .note { color: var(--text-soft); font-size: 12px; margin-top: 4px; }
+  .idea .status {
+    align-self: flex-start; font-size: 10px; padding: 2px 8px;
+    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.08em;
+    margin-top: 6px;
+  }
+  .idea .status.booked { background: var(--green-soft); color: var(--green); }
+  .idea .status.pending { background: var(--amber-soft); color: var(--amber); }
+  .idea .status.idea { background: var(--bg-soft); color: var(--text-muted); }
+
+  /* LOGISTICS TABLE */
+  .logi-block { background: var(--bg-card); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); margin-bottom: 14px; }
+  .logi-block h3 { font-size: 16px; margin-bottom: 12px; }
+  .logi-block table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .logi-block th, .logi-block td {
+    text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .logi-block th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 500; }
+  .logi-block td { color: var(--text-soft); }
+  .logi-block td strong { color: var(--text); }
+  @media (max-width: 600px) {
+    .logi-block { padding: 14px; overflow-x: auto; }
+    .logi-block table { min-width: 520px; }
+  }
+
+  /* TRAVELERS */
+  .travelers {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .traveler {
+    background: var(--bg-card); border-radius: 12px; padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .traveler h4 { font-size: 18px; margin-bottom: 6px; }
+  .traveler .dates { font-size: 13px; color: var(--text-soft); margin-bottom: 8px; }
+  .traveler .flight { font-size: 12px; color: var(--text-muted); border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 6px; }
+  .traveler .flight strong { color: var(--text-soft); }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 40px 24px; color: var(--text-muted); font-size: 13px;
+    border-top: 1px solid var(--line); margin-top: 40px;
+  }
+  footer .heart { color: var(--rome); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Family Trip · Italy</div>
+    <h1>Puglia 2026</h1>
+    <div class="hero-dates">August 17 – August 29, 2026</div>
+    <div class="hero-meta">
+      <span>· 12 days ·</span>
+      <span>· Rome → Matera → Puglia ·</span>
+      <span>· Peter &amp; Dana, joined by Mason &amp; Nate ·</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+    <li><a href="#itinerary">Day by Day</a></li>
+    <li><a href="#bookings">Bookings</a></li>
+    <li><a href="#dining">Dining Ideas</a></li>
+    <li><a href="#activities">Activities</a></li>
+    <li><a href="#logistics">Logistics</a></li>
+    <li><a href="#travelers">Travelers</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <h2>Trip at a Glance</h2>
+    <p class="sub">Three phases across twelve days — a slow Rome opening, an overnight in the Sassi of Matera, then a week at a villa near Carovigno.</p>
+    <div class="phases">
+      <div class="phase rome">
+        <div class="label">Phase 1</div>
+        <h3>Rome</h3>
+        <div class="dates">Tue 8/18 – Fri 8/21 · 3 nights</div>
+        <div class="meta">
+          <div><strong>Lodging:</strong> Six Senses Rome</div>
+          <div><strong>Travelers:</strong> Peter &amp; Dana</div>
+          <div><strong>Status:</strong> Booked</div>
+        </div>
+      </div>
+      <div class="phase matera">
+        <div class="label">Phase 2</div>
+        <h3>Matera</h3>
+        <div class="dates">Fri 8/21 – Sat 8/22 · 1 night</div>
+        <div class="meta">
+          <div><strong>Lodging:</strong> Palazzo Gattini</div>
+          <div><strong>Travelers:</strong> Peter &amp; Dana</div>
+          <div><strong>Status:</strong> Booked</div>
+        </div>
+      </div>
+      <div class="phase puglia">
+        <div class="label">Phase 3</div>
+        <h3>Puglia Villa</h3>
+        <div class="dates">Sat 8/22 – Sat 8/29 · 7 nights</div>
+        <div class="meta">
+          <div><strong>Lodging:</strong> Villa near Carovigno</div>
+          <div><strong>Travelers:</strong> Peter &amp; Dana, + M&amp;N from 8/23</div>
+          <div><strong>Status:</strong> Booked</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section id="calendar">
+    <h2>Calendar View</h2>
+    <p class="sub">August 2026 at a glance — color-coded by phase.</p>
+    <div class="cal-wrap">
+      <div class="cal-month-label">August 2026</div>
+      <div class="cal">
+        <div class="dow">Sun</div><div class="dow">Mon</div><div class="dow">Tue</div><div class="dow">Wed</div><div class="dow">Thu</div><div class="dow">Fri</div><div class="dow">Sat</div>
+
+        <!-- Aug 2026 starts on Saturday. Pad 6 empty cells. -->
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day"><div class="n">1</div></div>
+
+        <div class="day"><div class="n">2</div></div>
+        <div class="day"><div class="n">3</div></div>
+        <div class="day"><div class="n">4</div></div>
+        <div class="day"><div class="n">5</div></div>
+        <div class="day"><div class="n">6</div></div>
+        <div class="day"><div class="n">7</div></div>
+        <div class="day"><div class="n">8</div></div>
+
+        <div class="day"><div class="n">9</div></div>
+        <div class="day"><div class="n">10</div></div>
+        <div class="day"><div class="n">11</div></div>
+        <div class="day"><div class="n">12</div></div>
+        <div class="day"><div class="n">13</div></div>
+        <div class="day"><div class="n">14</div></div>
+        <div class="day"><div class="n">15</div></div>
+
+        <div class="day"><div class="n">16</div></div>
+        <div class="day trip"><div class="n">17</div><div class="tag">Fly out</div></div>
+        <div class="day trip rome"><div class="n">18</div><div class="tag">Land Rome</div></div>
+        <div class="day trip rome"><div class="n">19</div><div class="tag">Rome</div></div>
+        <div class="day trip rome"><div class="n">20</div><div class="tag">Rome</div></div>
+        <div class="day trip matera"><div class="n">21</div><div class="tag">→ Matera</div></div>
+        <div class="day trip puglia"><div class="n">22</div><div class="tag">→ Villa</div></div>
+
+        <div class="day trip puglia"><div class="n">23</div><div class="tag">M&amp;N arrive</div></div>
+        <div class="day trip puglia"><div class="n">24</div><div class="tag">Vespas</div></div>
+        <div class="day trip puglia"><div class="n">25</div><div class="tag">Villa</div></div>
+        <div class="day trip puglia"><div class="n">26</div><div class="tag">Boat</div></div>
+        <div class="day trip puglia"><div class="n">27</div><div class="tag">Villa</div></div>
+        <div class="day trip puglia"><div class="n">28</div><div class="tag">Villa</div></div>
+        <div class="day trip depart"><div class="n">29</div><div class="tag">Depart</div></div>
+
+        <div class="day"><div class="n">30</div></div>
+        <div class="day"><div class="n">31</div></div>
+      </div>
+      <div class="cal-legend">
+        <span><i style="background: var(--rome);"></i> Rome</span>
+        <span><i style="background: var(--matera);"></i> Matera</span>
+        <span><i style="background: var(--puglia);"></i> Puglia villa</span>
+        <span><i style="background: var(--depart);"></i> Travel / depart</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ITINERARY -->
+  <section id="itinerary">
+    <h2>Day by Day</h2>
+    <p class="sub">The plan for each day. Items marked <em style="color: var(--amber);">TBD</em> are still being shaped — suggestions welcome.</p>
+    <div class="days">
+
+      <div class="day-card rome">
+        <div class="date-block">
+          <div class="dow">Tue</div>
+          <div class="num">18</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Rome</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Six Senses Rome</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Land FCO 11:50am · AZ611 · Term 3 · transfer to Six Senses</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Six Senses spa (Roman bath circuit) · short Pantheon-area walk</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">Light bite near hotel</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">Bivium @ Six Senses (TBD)</div></div>
+          </div>
+          <div class="notes">Booking Y6BTBZ · low-key arrival night</div>
+        </div>
+      </div>
+
+      <div class="day-card rome">
+        <div class="date-block">
+          <div class="dow">Wed</div>
+          <div class="num">19</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Rome</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Six Senses Rome</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">9:30am Galleria Doria Pamphilj (audio guide) · then walk south past Pantheon to Campo de' Fiori</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Walk east to Monti for shopping (Tina Sondergaard, Le Gallinelle, Pifebo) · back to hotel by 4pm · rest</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v tbd">Campo de' Fiori area · Roscioli / Pianostrada / Armando al Pantheon (TBD)</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">8:30pm Pipero (TBD — booking)</div></div>
+          </div>
+          <div class="notes">Mostly walking · easy pace</div>
+        </div>
+      </div>
+
+      <div class="day-card rome">
+        <div class="date-block">
+          <div class="dow">Thu</div>
+          <div class="num">20</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Rome</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Six Senses Rome</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v tbd">TBD — pasta class, mosaic workshop, or shopping</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD — Coppedè + Aventine + Garbatella, OR shopping in Monti / Margutta</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">Glass Hostaria or Retrobottega (TBD — booking)</div></div>
+          </div>
+          <div class="notes">2nd full day open for shaping</div>
+        </div>
+      </div>
+
+      <div class="day-card matera">
+        <div class="date-block">
+          <div class="dow">Fri</div>
+          <div class="num">21</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Matera</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Palazzo Gattini</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Pick up rental car; drive Rome → Matera (~4h)</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Check in Palazzo Gattini; sunset over the Sassi</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">On the road</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">Matera dinner — TBD</div></div>
+          </div>
+          <div class="notes">Travel day</div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Sat</div>
+          <div class="num">22</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Drive Matera → villa (~1h45)</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Settle into the villa; pool / beach</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">On the road</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">Villa dinner — TBD</div></div>
+          </div>
+          <div class="notes">Arrive at villa</div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Sun</div>
+          <div class="num">23</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Drive Carovigno → Bari (BRI) to pick up Mason &amp; Nate (~1h15)</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Drive back to villa; pool / settle the boys in</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">Welcome dinner at the villa or nearby — TBD</div></div>
+          </div>
+          <div class="notes">Mason &amp; Nate arrive</div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Mon</div>
+          <div class="num">24</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Pickup Vespas Ostuni 9:30am · Cisternino 10:25 · Locorotondo 11:15</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Martina Franca 12:15 · Ceglie 1:15pm · return scooters Ostuni ~3:45pm</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">Osteria Giuseppe (Ceglie Messapica) 1:15pm</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">Easy at villa — TBD</div></div>
+          </div>
+          <div class="notes">Vespa loop · 4 white towns · ~80km · ~2.5hr riding</div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Tue</div>
+          <div class="num">25</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">Baby Dicecca — 1:30pm</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">TBD</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Wed</div>
+          <div class="num">26</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Boat trip</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">Boat trip</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">On the boat</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v">Something chill locally</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Thu</div>
+          <div class="num">27</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v">Cielo @ Relais La Sommità</div></div>
+          </div>
+          <div class="notes confirmed">✓ Dinner confirmed</div>
+        </div>
+      </div>
+
+      <div class="day-card puglia">
+        <div class="date-block">
+          <div class="dow">Fri</div>
+          <div class="num">28</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Puglia</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Villa (Carovigno)</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v tbd">TBD</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">Masseria Moroseta — 1:00pm</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v tbd">TBD</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card depart">
+        <div class="date-block">
+          <div class="dow">Sat</div>
+          <div class="num">29</div>
+          <div class="mon">August</div>
+          <div class="phase-tag">Depart</div>
+        </div>
+        <div class="body">
+          <div class="lodging">Heading home</div>
+          <div class="rows">
+            <div class="row"><div class="k">Morning</div><div class="v">Leave villa ~8:30am · drive to BRI (~1h15)</div></div>
+            <div class="row"><div class="k">Afternoon</div><div class="v">AZ1612 BRI 11:20 → FCO 12:30 · AZ610 FCO 15:10 → JFK 18:55</div></div>
+            <div class="row"><div class="k">Lunch</div><div class="v">On AZ1612 / at FCO</div></div>
+            <div class="row"><div class="k">Dinner</div><div class="v">On AZ610</div></div>
+          </div>
+          <div class="notes">Departure day · Booking Y6BTBZ</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BOOKINGS -->
+  <section id="bookings">
+    <h2>Bookings</h2>
+    <p class="sub">Single source of truth for every reservation. Pending items are still being locked in.</p>
+    <div class="booking-cols">
+
+      <div class="booking-col">
+        <h3><span class="dot green"></span>Confirmed</h3>
+        <div class="booking-list">
+          <div class="booking confirmed">
+            <div><span class="type-tag">Hotel</span><span class="name">Six Senses Rome</span></div>
+            <div class="meta"><span>8/18–8/21</span><span>· 3 nights</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Hotel</span><span class="name">Palazzo Gattini</span></div>
+            <div class="meta"><span>8/21–8/22</span><span>· 1 night, Matera</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Villa</span><span class="name">Villa near Carovigno</span></div>
+            <div class="meta"><span>8/22–8/29</span><span>· 7 nights · party of 4</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Flight</span><span class="name">AZ611 JFK → FCO</span></div>
+            <div class="meta"><span>8/17 → 8/18</span><span>· 21:10 → 11:50</span><span>· Y6BTBZ</span></div>
+            <div class="notes">Peter &amp; Dana · Term 1 → Term 3 · 2 checked bags pp</div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Flight</span><span class="name">AZ1612 BRI → FCO</span></div>
+            <div class="meta"><span>Sat 8/29</span><span>· 11:20 → 12:30</span><span>· Y6BTBZ</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Flight</span><span class="name">AZ610 FCO → JFK</span></div>
+            <div class="meta"><span>Sat 8/29</span><span>· 15:10 → 18:55</span><span>· Y6BTBZ</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Dinner</span><span class="name">Cielo @ Relais La Sommità</span></div>
+            <div class="meta"><span>Thu 8/27</span><span>· party of 4</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Lunch</span><span class="name">Baby Dicecca</span></div>
+            <div class="meta"><span>Tue 8/25</span><span>· 1:30 PM</span></div>
+          </div>
+          <div class="booking confirmed">
+            <div><span class="type-tag">Lunch</span><span class="name">Masseria Moroseta</span></div>
+            <div class="meta"><span>Fri 8/28</span><span>· 1:00 PM</span><span>· <a href="https://www.masseriamoroseta.it/booking-table/?lang=en">link</a></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-col">
+        <h3><span class="dot amber"></span>Pending</h3>
+        <div class="booking-list">
+          <div class="booking pending">
+            <div><span class="type-tag">Lunch</span><span class="name">Osteria Giuseppe</span></div>
+            <div class="meta"><span>Mon 8/24</span><span>· 1:15 PM</span><span>· Ceglie Messapica</span></div>
+            <div class="notes">Vespa-day lunch · request sent 5/3 — awaiting confirmation</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Activity</span><span class="name">Vespa rental — RR Scooter Rent</span></div>
+            <div class="meta"><span>Mon 8/24</span><span>· 9:30 AM pickup</span><span>· Ostuni</span></div>
+            <div class="notes">4× 125cc · need IDP · <a href="https://www.rrscooterrent.com/tariffe-noleggio-scooter-e-moto/">rates</a></div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Activity</span><span class="name">Boat trip</span></div>
+            <div class="meta"><span>Wed 8/26</span></div>
+            <div class="notes">Need to pick operator + book</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Car</span><span class="name">Car rental Rome → Bari</span></div>
+            <div class="meta"><span>8/21 pickup</span></div>
+            <div class="notes">One-way? Or return + 2nd rental in Puglia?</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Transfer</span><span class="name">FCO → Six Senses</span></div>
+            <div class="meta"><span>8/18</span></div>
+            <div class="notes">Or Six Senses arranges</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Dinner</span><span class="name">Bivium @ Six Senses</span></div>
+            <div class="meta"><span>Tue 8/18</span></div>
+            <div class="notes">Arrival night — book once landed</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Dinner</span><span class="name">Pipero</span></div>
+            <div class="meta"><span>Wed 8/19</span></div>
+            <div class="notes">Modern Italian · 1-Michelin · need to confirm Aug hours</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Dinner</span><span class="name">Glass Hostaria or Retrobottega</span></div>
+            <div class="meta"><span>Thu 8/20</span></div>
+            <div class="notes">Pick one · need to confirm Aug hours</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Activity</span><span class="name">Galleria Doria Pamphilj</span></div>
+            <div class="meta"><span>Wed 8/19 morning</span></div>
+            <div class="notes">Tickets walk-up usually fine · audio by current Prince</div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Flight</span><span class="name">Mason &amp; Nate inbound to BRI</span></div>
+            <div class="meta"><span>Sun 8/23 AM</span></div>
+          </div>
+          <div class="booking pending">
+            <div><span class="type-tag">Flight</span><span class="name">Mason &amp; Nate outbound from BRI</span></div>
+            <div class="meta"><span>Sat 8/29</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DINING -->
+  <section id="dining">
+    <h2>Dining Ideas</h2>
+    <p class="sub">Restaurants we're considering across the Itria valley. Status moves from Idea → Pending → Booked as we lock things in.</p>
+    <div class="ideas">
+      <div class="idea">
+        <div class="name">Masseria Moroseta</div>
+        <div class="where">Ostuni · Fancy</div>
+        <div class="note">Lunch booked Fri 8/28 1pm</div>
+        <a href="https://www.masseriamoroseta.it/booking-table/?lang=en" target="_blank" rel="noopener">Website</a>
+        <div class="status booked">Booked</div>
+      </div>
+      <div class="idea">
+        <div class="name">Cielo @ Relais La Sommità</div>
+        <div class="where">Ostuni area · Fancy</div>
+        <div class="note">Dinner booked Thu 8/27</div>
+        <div class="status booked">Booked</div>
+      </div>
+      <div class="idea">
+        <div class="name">Baby Dicecca</div>
+        <div class="where">Ostuni · Casual</div>
+        <div class="note">Lunch booked Tue 8/25 1:30</div>
+        <div class="status booked">Booked</div>
+      </div>
+      <div class="idea">
+        <div class="name">Osteria Giuseppe</div>
+        <div class="where">Ceglie Messapica · Casual</div>
+        <div class="note">Lunch hold for Vespa day (Mon 8/24)</div>
+        <a href="https://www.osteriadagiuseppe.it/" target="_blank" rel="noopener">Website</a>
+        <div class="status pending">Pending</div>
+      </div>
+      <div class="idea">
+        <div class="name">Acquasanta Dispensa e Vino</div>
+        <div class="where">Ostuni · Casual</div>
+        <a href="https://www.tripadvisor.it/Restaurant_Review-g642178-d25339287-Reviews-Acquasanta-Ostuni_Province_of_Brindisi_Puglia.html" target="_blank" rel="noopener">More info</a>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Giardino 36</div>
+        <div class="where">Cisternino · Fancy</div>
+        <a href="https://www.instagram.com/giardini_36/" target="_blank" rel="noopener">Instagram</a>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Masseria Valentina</div>
+        <div class="where">Ostuni area · Fancy</div>
+        <a href="https://masseriavalentina.com/en/lamasseria/" target="_blank" rel="noopener">Website</a>
+        <div class="status idea">Idea</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="activities">
+    <h2>Activities &amp; Day Trips</h2>
+    <p class="sub">Ideas to pull onto the day-by-day plan as we firm up the open days.</p>
+    <div class="ideas">
+      <div class="idea">
+        <div class="name">Vespa rental (Itria loop)</div>
+        <div class="where">RR Scooter Rent · Ostuni</div>
+        <div class="note">Mon 8/24 · 4× 125cc · ~80km loop through 4 white towns</div>
+        <a href="https://www.rrscooterrent.com/tariffe-noleggio-scooter-e-moto/" target="_blank" rel="noopener">Rates</a>
+        <div class="status pending">Pending</div>
+      </div>
+      <div class="idea">
+        <div class="name">Boat trip</div>
+        <div class="where">Coast off Carovigno / Polignano</div>
+        <div class="note">Wed 8/26 placeholder · operator TBD</div>
+        <div class="status pending">Pending</div>
+      </div>
+      <div class="idea">
+        <div class="name">Egnazia archaeological tour</div>
+        <div class="where">Egnazia</div>
+        <a href="https://egnaziatouring.com/en/" target="_blank" rel="noopener">Website</a>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Torre Guaceto Marine Reserve</div>
+        <div class="where">~10 min from villa</div>
+        <div class="note">Walk, snorkel, beach</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Ostuni (white town)</div>
+        <div class="where">Ostuni</div>
+        <div class="note">Sunset wander + dinner</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Polignano a Mare</div>
+        <div class="where">~45 min north</div>
+        <div class="note">Cliffside + Cala Porto</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Alberobello (trulli)</div>
+        <div class="where">~50 min</div>
+        <div class="note">Touristy but iconic</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Lecce</div>
+        <div class="where">~1h south</div>
+        <div class="note">Baroque day trip</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Cooking / pasta class</div>
+        <div class="where">Itria valley masseria</div>
+        <div class="note">Half-day</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Itria valley winery</div>
+        <div class="where">Locorotondo / Martina Franca</div>
+        <div class="note">Half-day</div>
+        <div class="status idea">Idea</div>
+      </div>
+      <div class="idea">
+        <div class="name">Sunset aperitivo</div>
+        <div class="where">Borgo Egnazia / Don Camillo bar</div>
+        <div class="note">Easy sunset drink</div>
+        <div class="status idea">Idea</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGISTICS -->
+  <section id="logistics">
+    <h2>Logistics</h2>
+    <p class="sub">Flights, ground transport, and transfers in one place.</p>
+
+    <div class="logi-block">
+      <h3>Flights</h3>
+      <table>
+        <thead><tr><th>Traveler(s)</th><th>Direction</th><th>Date</th><th>Time</th><th>Flight</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Peter &amp; Dana</strong></td><td>Outbound JFK → FCO</td><td>8/17 → 8/18</td><td>21:10 → 11:50</td><td>AZ611</td><td>Y6BTBZ · Term 1 → Term 3 · 2 bags pp · Peter 4A</td></tr>
+          <tr><td><strong>Mason &amp; Nate</strong></td><td>Inbound to BRI</td><td>8/23 AM</td><td>TBD</td><td>TBD</td><td>Pickup at BRI</td></tr>
+          <tr><td><strong>Peter &amp; Dana</strong></td><td>BRI → FCO</td><td>8/29</td><td>11:20 → 12:30</td><td>AZ1612</td><td>Y6BTBZ · Peter 3C</td></tr>
+          <tr><td><strong>Peter &amp; Dana</strong></td><td>FCO → JFK</td><td>8/29</td><td>15:10 → 18:55</td><td>AZ610</td><td>Y6BTBZ · Term 1 · Peter 4A</td></tr>
+          <tr><td><strong>Mason &amp; Nate</strong></td><td>Outbound from BRI</td><td>8/29</td><td>TBD</td><td>TBD</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logi-block">
+      <h3>Car rental</h3>
+      <table>
+        <thead><tr><th>Provider</th><th>Pickup</th><th>Drop-off</th><th>Dates</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>TBD</td><td>Rome (FCO or city)</td><td>Bari (BRI)</td><td>8/21 → 8/29</td><td>One-way? Or return + 2nd rental in Puglia?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logi-block">
+      <h3>Transfers &amp; drivers</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Date</th><th>From → To</th><th>Provider</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>FCO arrival transfer</td><td>8/18</td><td>FCO → Six Senses</td><td>TBD (or Six Senses)</td><td>Optional — taxi works too</td></tr>
+          <tr><td>Bari pickup</td><td>8/23</td><td>Villa → BRI → Villa</td><td>Self-drive</td><td>~1h15 each way</td></tr>
+          <tr><td>Departure transfer</td><td>8/29</td><td>Villa → BRI</td><td>Self-drive</td><td>Leave villa ~8:30am for 11:20 BRI flight</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TRAVELERS -->
+  <section id="travelers">
+    <h2>Travelers</h2>
+    <p class="sub">Who's where, when.</p>
+    <div class="travelers">
+      <div class="traveler">
+        <h4>Peter</h4>
+        <div class="dates">8/18 arrival FCO → 8/29 departure (via FCO)</div>
+        <div class="flight"><strong>In:</strong> AZ611 JFK 21:10 8/17 → FCO 11:50 8/18</div>
+        <div class="flight"><strong>Out:</strong> AZ1612 BRI 11:20 → FCO 12:30; AZ610 FCO 15:10 → JFK 18:55</div>
+        <div class="flight"><strong>Notes:</strong> Y6BTBZ · seats 4A / 3C / 4A · 2 checked bags</div>
+      </div>
+      <div class="traveler">
+        <h4>Dana</h4>
+        <div class="dates">8/18 arrival FCO → 8/29 departure (via FCO)</div>
+        <div class="flight"><strong>In:</strong> AZ611 JFK 21:10 8/17 → FCO 11:50 8/18</div>
+        <div class="flight"><strong>Out:</strong> AZ1612 BRI 11:20 → FCO 12:30; AZ610 FCO 15:10 → JFK 18:55</div>
+        <div class="flight"><strong>Notes:</strong> Y6BTBZ · 2 checked bags</div>
+      </div>
+      <div class="traveler">
+        <h4>Mason</h4>
+        <div class="dates">8/23 arrival BRI → 8/29 departure from BRI</div>
+        <div class="flight"><strong>In / Out:</strong> TBD</div>
+        <div class="flight"><strong>Notes:</strong> Pickup at BRI</div>
+      </div>
+      <div class="traveler">
+        <h4>Nate</h4>
+        <div class="dates">8/23 arrival BRI → 8/29 departure from BRI</div>
+        <div class="flight"><strong>In / Out:</strong> TBD</div>
+        <div class="flight"><strong>Notes:</strong> Pickup at BRI</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>Made with <span class="heart">♥</span> for the Harris family · Puglia 2026</div>
+  <div style="margin-top: 6px; font-size: 12px;">Suggestions, swaps, or "let's eat there instead" — tell Peter.</div>
+</footer>
+
+</body>
+</html>
