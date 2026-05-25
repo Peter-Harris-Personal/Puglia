@@ -199,6 +199,38 @@
   }
   .leaflet-popup-content .pop-desc { color: var(--text-soft); }
 
+  /* SHOP MAP */
+  #rome-shop-map {
+    height: 460px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 0;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 600px) { #rome-shop-map { height: 380px; } }
+  .shop-pin {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  }
+  .shop-pin.popolo { background: #C26840; }
+  .shop-pin.storico { background: #6B8E54; }
+  .shop-pin.hotel {
+    width: 30px; height: 30px;
+    background: #4B3F66;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 700;
+    font-family: -apple-system, sans-serif;
+  }
+  .shop-legend {
+    display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 10px 0 18px;
+    font-size: 12px; color: var(--text-soft);
+  }
+  .shop-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .shop-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+
   /* ITINERARY */
   .days { display: flex; flex-direction: column; gap: 12px; }
   .day-card {
@@ -844,6 +876,14 @@
     <h2>Rome Shopping</h2>
     <p class="sub">Dana's shortlist — boutiques worth the detour beyond the usual Via Condotti/Via dei Babuino tourist pull. Cluster these into two walks based on neighborhood.</p>
 
+    <div id="rome-shop-map"></div>
+    <div class="shop-legend">
+      <span><i style="background: #4B3F66;"></i> Six Senses (your base)</span>
+      <span><i style="background: #C26840;"></i> Popolo / Spanish Steps cluster</span>
+      <span><i style="background: #6B8E54;"></i> Centro Storico cluster</span>
+      <span style="color: var(--text-muted);">· click a pin for shop details</span>
+    </div>
+
     <h3 style="font-family: Georgia, serif; font-weight: 600; font-size: 17px; margin: 24px 0 10px; color: var(--text-soft);">Piazza del Popolo / Spanish Steps area</h3>
     <div class="ideas">
       <div class="idea">
@@ -1191,6 +1231,63 @@
   // Fit map to show all markers with a little padding
   const group = L.featureGroup(markers);
   map.fitBounds(group.getBounds().pad(0.12));
+
+  // ============= ROME SHOPPING DETAIL MAP =============
+  const shops = [
+    { lat: 41.9080, lng: 12.4790, cluster: 'popolo', name: 'Aspesi',
+      addr: 'Via del Babuino 144a', note: 'Italian fashion · refined casual outerwear and tailoring' },
+    { lat: 41.9112, lng: 12.4769, cluster: 'popolo', name: 'Laura Urbinati',
+      addr: 'Via dell\'Oca 48', note: 'Roman designer · womenswear, swim, lingerie' },
+    { lat: 41.9098, lng: 12.4769, cluster: 'popolo', name: 'Fondaco Roma',
+      addr: 'Via della Frezza 60', note: 'Rome\'s first concept "street shop" · fashion, home, food, barber' },
+    { lat: 41.9047, lng: 12.4791, cluster: 'popolo', name: 'Schostal Originals',
+      addr: 'Via della Fontanella di Borghese', note: 'Pajamas + socks + shirts · since 1870 · 4th-generation' },
+    { lat: 41.8954, lng: 12.4714, cluster: 'storico', name: 'Officine Red',
+      addr: 'Via del Pellegrino 79/80', note: 'Multi-brand boutique · men\'s & women\'s' },
+    { lat: 41.8954, lng: 12.4711, cluster: 'storico', name: 'Retropose',
+      addr: 'Via del Pellegrino 60', note: 'Handbags & accessories · next door to Officine Red' },
+    { lat: 41.8941, lng: 12.4710, cluster: 'storico', name: 'Borini',
+      addr: 'Via dei Pettinari', note: 'Handmade leather shoes · old-school' }
+  ];
+
+  const shopMap = L.map('rome-shop-map', { scrollWheelZoom: false }).setView([41.9020, 12.4775], 15);
+  shopMap.on('click', function() { shopMap.scrollWheelZoom.enable(); });
+  shopMap.on('mouseout', function() { shopMap.scrollWheelZoom.disable(); });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(shopMap);
+
+  // Hotel marker (star)
+  const hotelIcon = L.divIcon({
+    html: '<div class="shop-pin hotel">&#9733;</div>',
+    className: '',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -14]
+  });
+  const hotelMarker = L.marker([41.8979, 12.4827], { icon: hotelIcon }).addTo(shopMap)
+    .bindPopup('<div class="pop-name">Six Senses Rome</div><div class="pop-desc">Piazza San Marcello · your base · walkable to both clusters</div>');
+
+  // Shop markers
+  const shopMarkers = shops.map(function(s) {
+    const icon = L.divIcon({
+      html: '<div class="shop-pin ' + s.cluster + '"></div>',
+      className: '',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+      popupAnchor: [0, -10]
+    });
+    const html =
+      '<div class="pop-name">' + s.name + '</div>' +
+      '<div class="pop-desc">' + s.addr + '<br>' + s.note + '</div>';
+    return L.marker([s.lat, s.lng], { icon: icon }).addTo(shopMap).bindPopup(html);
+  });
+
+  // Fit bounds to hotel + all shops
+  const shopGroup = L.featureGroup([hotelMarker].concat(shopMarkers));
+  shopMap.fitBounds(shopGroup.getBounds().pad(0.15));
 })();
 </script>
 
