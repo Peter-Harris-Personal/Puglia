@@ -162,9 +162,7 @@
   <div class="stop"><div class="time">10:55a</div><div class="what"><b>Zinc</b> · 22 Water St, Cambridge <span class="tag walkin">open 9–6</span><div class="m">Ask for Unit 921 (available later than desired); rep 1BR 741 sqft ~$3,555+. Cambridge Crossing.</div></div></div>
   <div class="drivestop">▸ drive ~5 min</div>
   <div class="stop"><div class="time">11:30a</div><div class="what"><b>Verge Residences</b> · 20 Medford St, Somerville <span class="tag walkin">confirmed appt ✓</span><div class="m"><b>Best unit: 302.</b> Electricity included, <b>move-in flexible</b>. Closest to the office (~3–5 min). Locked 11:30a with the agent. <em>(Ref: 202 was $3,650 / 728 sqft.)</em></div></div></div>
-  <div class="drivestop">▸ drive ~4 min</div>
-  <div class="stop"><div class="time">12:05p</div><div class="what"><b>Union 346</b> · 346 Somerville Ave, Union Sq <span class="tag appt">opens 10 · if time</span><div class="m">Adjacent to the office. <b>No qualifying 1BR live right now</b> — quick look; call ahead (844-927-3883).</div></div></div>
-  <div class="drivestop">▸ Wrap by 12:30p → back to The Row for Nate's 1pm call. <em>Optional only if ahead: Sphere (Ball Sq).</em></div>
+  <div class="drivestop">▸ Verge is the last tour — wrap by 12:30p → back to The Row for Nate's 1pm call. <em>Optional only if ahead: Mason (Union Sq) or Sphere (Ball Sq). Union 346 dropped — nothing available.</em></div>
   <div class="stop"><div class="time">1:00p</div><div class="what"><b>Nate's Zoom meeting — can't miss</b><div class="m">Take it from The Row (Assembly Square). Afterward, drive to Logan (~20–25 min + rental return).</div></div></div>
   <div class="stop"><div class="time">4:00p</div><div class="what"><b>Nate's flight — Logan</b></div></div>
 </div>
@@ -192,9 +190,9 @@
   <div class="b">
     <div class="row1"><h3>Union 346</h3><span class="tier tier1">~2–4 min</span></div>
     <div class="addr">346 Somerville Ave, Somerville · Union Sq (Green), ~3 min walk</div>
-    <div class="unit">1BR+Den ~724 sqft — price/availability "call for details." <b>No qualifying 1BR live now</b> (studios only).</div>
+    <div class="unit"><b>✗ Off the list — nothing available</b> (confirmed by leasing).</div>
     <div class="kv"><span>Parking:</span> on-site (confirm rate)</div>
-    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 10–5</div></div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hclosed">Off list</div></div>
     <div class="foot"><a href="https://www.union346.com/floorplans" target="_blank">Floor plans ↗</a><span>844-927-3883</span></div>
   </div>
 
@@ -356,7 +354,7 @@
   <thead><tr><th>Building</th><th>City</th><th>Rep 1BR (unit · rent · sqft)</th><th>Nearest MBTA</th><th>Parking</th><th>Sun 8/2</th><th>Mon 8/3</th><th>Drive to office</th></tr></thead>
   <tbody>
     <tr><td>Verge</td><td>Somerville</td><td>#202 · $3,650 · 728 · elec incl</td><td>Union Sq/Lechmere (Green)</td><td>$460/mo</td><td>by appt</td><td>by appt</td><td>~3–5 min</td></tr>
-    <tr><td>Union 346</td><td>Somerville</td><td>none live now (studios)</td><td>Union Sq (Green)</td><td>on-site</td><td>closed</td><td>10–5</td><td>~2–4 min</td></tr>
+    <tr><td>Union 346</td><td>Somerville</td><td>✗ off list — no availability</td><td>Union Sq (Green)</td><td>on-site</td><td>closed</td><td>—</td><td>~2–4 min</td></tr>
     <tr><td>Mason</td><td>Somerville</td><td>~854sf ~$3,000 (not live)</td><td>Union Sq (Green)</td><td>garage</td><td>by agent</td><td>by agent</td><td>~3–4 min</td></tr>
     <tr><td>Metro9</td><td>Somerville</td><td>#513 · $3,800 · 1,006 · pkg incl</td><td>Union Sq/Lechmere (Green)</td><td>incl</td><td>by appt</td><td>by appt</td><td>~4–6 min</td></tr>
     <tr><td>AVA North Point</td><td>Cambridge</td><td>#140 · $3,668 · 668</td><td>Lechmere (Green)</td><td>garage</td><td>9–7</td><td>9–7</td><td>~4–6 min</td></tr>
@@ -418,7 +416,7 @@
   var CATCOLOR={green:'#15803d',amber:'#b45309',red:'#b91c1c',todo:'#ffffff'};
   function catOf(v){var s=STATUS.find(function(x){return x.v===v;});return s?s.cat:'todo';}
   // Shared statuses I maintain for everyone (updated when Peter tells me): {key:{s:status,n:note}}
-  var SEED={verge:{s:'scheduled',n:'Appt Mon 11:30am · best unit 302 · move-in flexible'}};
+  var SEED={verge:{s:'scheduled',n:'Appt Mon 11:30am · best unit 302 · move-in flexible'},union346:{s:'noavail',n:'Nothing available — off the list'}};
   var SKEY='nate_contact_tracker_v2';
   var state={};
   Object.keys(SEED).forEach(function(k){state[k]={s:SEED[k].s||'todo',n:SEED[k].n||''};});
