@@ -83,9 +83,9 @@
   .act:hover{filter:brightness(.97)}
   .trk{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   .trk-tier{background:#eef1f5;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;padding:6px 14px}
-  .trk-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line)}
+  .trk-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line)}
   .trk-row .num{flex:0 0 24px;height:24px;border-radius:50%;color:#fff;font:700 12px inherit;display:flex;align-items:center;justify-content:center}
-  .trk-row .tn{flex:1;font-size:14px;font-weight:600;display:flex;flex-direction:column}
+  .trk-row .tn{flex:1 1 220px;font-size:14px;font-weight:600;display:flex;flex-direction:column}
   .trk-row .tnote{font-weight:400;color:var(--muted);font-size:12px;margin-top:1px}
   .callt{display:inline-block;background:var(--warnbg);color:var(--warn);font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px}
   .pill{flex:0 0 auto;cursor:pointer;border:1px solid;border-radius:20px;font:700 12px inherit;padding:5px 12px;min-width:122px;text-align:center}
@@ -93,6 +93,12 @@
   .pill.s1{background:var(--goodbg);color:var(--good);border-color:#bfe3ca}
   .pill.s2{background:var(--warnbg);color:var(--warn);border-color:#f0d9a8}
   .pill.s3{background:#fdeceb;color:#b91c1c;border-color:#f3c9c6}
+  .sel{flex:0 0 auto;font:600 12.5px inherit;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;color:var(--ink);cursor:pointer;min-width:158px}
+  .note{flex:1 1 140px;min-width:120px;font:400 12.5px inherit;border:1px solid var(--line);border-radius:8px;padding:6px 9px;color:var(--ink)}
+  .sel.cat-green{border-color:#bfe3ca;background:var(--goodbg);color:var(--good)}
+  .sel.cat-amber{border-color:#f0d9a8;background:var(--warnbg);color:var(--warn)}
+  .sel.cat-red{border-color:#f3c9c6;background:#fdeceb;color:#b91c1c}
+  .sel.cat-todo{background:#fff;color:var(--muted)}
   @media(max-width:640px){.pill{min-width:100px}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -108,7 +114,7 @@
     <div><b>Work (anchor)</b>Generate:Biomedicines<br>101 South St, Somerville — has parking</div>
     <div><b>Sun arrival</b>Land Logan 1:30p · rental car · rolling ~2:15p</div>
     <div><b>Sun night</b>The Row, Assembly Square</div>
-    <div><b>Mon deadline</b>Nate flies Logan 4:00p → leave last tour ~1:15p</div>
+    <div><b>Mon deadline</b>Tours end 12:30p sharp — Nate has a 1pm Zoom he can't miss; then 4:00p flight from Logan</div>
   </div>
 </header>
 
@@ -119,12 +125,12 @@
 </div>
 
 <!-- ============ MAP + TRACKER ============ -->
-<h2 id="maptracker">Map &amp; appointment tracker</h2>
-<p class="note">Pins are numbered to match the list below and colored by tier — <b style="color:#0f766e">teal</b> = closest to the office, <b style="color:#7c3aed">purple</b> = Assembly Row / Medford, <b style="color:#64748b">slate</b> = outer (Chelsea / Revere). The red ★ is Nate's office. Click a status button as you finish each call today — picks are saved in this browser, and the marker ring turns green when confirmed. Hit "Copy shareable status link" to send the confirmed set to Dana &amp; Nate.</p>
+<h2 id="maptracker">Map &amp; contact tracker</h2>
+<p class="note">Pins are numbered to match the list below and colored by tier — <b style="color:#0f766e">teal</b> = closest to the office, <b style="color:#7c3aed">purple</b> = Assembly Row / Medford, <b style="color:#64748b">slate</b> = outer (Chelsea / Revere). The red ★ is Nate's office. For each property, set a <b>contact status</b> (called, texted, scheduled, no availability…) and jot a note — a pin's ring turns <b style="color:#15803d">green</b> once a tour is scheduled/confirmed and <b style="color:#b45309">amber</b> once you've made contact. Entries save in this browser; tell me any updates and I'll bake them into the shared version, or use "Copy shareable link" to send your current view to Dana &amp; Nate. (Reset clears your local edits and restores the shared version.)</p>
 <div id="map"></div>
 <div class="trk-bar">
-  <div class="trk-sum"><b id="sumc">0</b> confirmed &nbsp;·&nbsp; <b id="sump">6</b> appointments still to call today</div>
-  <div class="trk-actions"><button id="copylink" class="act">Copy shareable status link</button><button id="resetstatus" class="act ghost">Reset</button></div>
+  <div class="trk-sum"><b id="sumSched">0</b> scheduled/confirmed &nbsp;·&nbsp; <b id="sumContact">0</b> contacted &nbsp;·&nbsp; <b id="sumTodo">17</b> not started</div>
+  <div class="trk-actions"><button id="copylink" class="act">Copy shareable link</button><button id="resetstatus" class="act ghost">Reset</button></div>
 </div>
 <div id="trk" class="trk"></div>
 
@@ -146,17 +152,18 @@
 </div>
 
 <div class="day mon">
-  <div class="dayhead"><span>Monday, Aug 3 — Assembly Row (walkable) → Union Sq / Cambridge → Logan</span><span class="win">9:00a – ~1:15p</span></div>
+  <div class="dayhead"><span>Monday, Aug 3 — Assembly Row (walkable) → Union Sq / Cambridge</span><span class="win">9:00a – 12:30p hard stop</span></div>
   <div class="stop"><div class="time">9:00a</div><div class="what"><b>Revolution at Assembly Row</b> · 290 Revolution Dr <span class="tag walkin">walk from hotel · open 9</span><div class="m">Unit 525: $3,475, 750 sqft (avail 10/6). Assembly Orange Line.</div></div></div>
   <div class="drivestop">▸ 3–5 min walk</div>
-  <div class="stop"><div class="time">9:45a</div><div class="what"><b>Montaje</b> · 449 Canal St <span class="tag walkin">walk · open 9</span><div class="m">Confirm Unit 0540; rep 1BR 696 sqft $3,175.</div></div></div>
+  <div class="stop"><div class="time">9:40a</div><div class="what"><b>Montaje</b> · 449 Canal St <span class="tag walkin">walk · open 9</span><div class="m">Confirm Unit 0540; rep 1BR 696 sqft $3,175.</div></div></div>
   <div class="drivestop">▸ 3–5 min walk</div>
-  <div class="stop"><div class="time">10:30a</div><div class="what"><b>Miscela</b> · 485 Foley St <span class="tag walkin">walk · open 9</span><div class="m">Confirm Unit 1104; rep tower 1BR 617 sqft $3,405. Closest to Assembly T.</div></div></div>
+  <div class="stop"><div class="time">10:20a</div><div class="what"><b>Miscela</b> · 485 Foley St <span class="tag walkin">walk · open 9</span><div class="m">Confirm Unit 1104; rep tower 1BR 617 sqft $3,405. Closest to Assembly T.</div></div></div>
   <div class="drivestop">▸ drive ~8 min</div>
-  <div class="stop"><div class="time">11:15a</div><div class="what"><b>Union 346</b> · 346 Somerville Ave, Union Sq <span class="tag appt">opens 10</span><div class="m">Adjacent to the office. <b>No qualifying 1BR live right now</b> — call ahead (844-927-3883) to confirm before committing the slot.</div></div></div>
+  <div class="stop"><div class="time">11:00a</div><div class="what"><b>Union 346</b> · 346 Somerville Ave, Union Sq <span class="tag appt">opens 10</span><div class="m">Adjacent to the office. <b>No qualifying 1BR live right now</b> — call ahead (844-927-3883) to confirm before committing the slot.</div></div></div>
   <div class="drivestop">▸ drive ~8 min</div>
-  <div class="stop"><div class="time">11:55a</div><div class="what"><b>Zinc</b> · 22 Water St, Cambridge <span class="tag walkin">open 9–6</span><div class="m">Ask for Unit 921 (available later than desired); rep 1BR 741 sqft ~$3,555+. Cambridge Crossing.</div></div></div>
-  <div class="drivestop">▸ Depart ~12:45–1:15p for Logan (~20–25 min + car return). <em>Optional if ahead: Sphere (Ball Sq) before noon, or One Webster / Vero on the way east to the airport.</em></div>
+  <div class="stop"><div class="time">11:40a</div><div class="what"><b>Zinc</b> · 22 Water St, Cambridge <span class="tag walkin">open 9–6</span><div class="m">Ask for Unit 921 (available later than desired); rep 1BR 741 sqft ~$3,555+. Cambridge Crossing.</div></div></div>
+  <div class="drivestop">▸ Wrap tours by 12:30p and head back to The Row so Nate is set for his 1pm call. <em>Optional only if well ahead: Sphere (Ball Sq).</em></div>
+  <div class="stop"><div class="time">1:00p</div><div class="what"><b>Nate's Zoom meeting — can't miss</b><div class="m">Take it from The Row (Assembly Square). Afterward, drive to Logan (~20–25 min + rental return).</div></div></div>
   <div class="stop"><div class="time">4:00p</div><div class="what"><b>Nate's flight — Logan</b></div></div>
 </div>
 
@@ -393,21 +400,37 @@
     {n:17,k:'revio',name:'Revio Revere Beach',t:3,lat:42.4154057,lng:-70.9896415,call:1,note:'Call to confirm hours · farthest',ph:'(866) 545-3549'}
   ];
   var OFFICE={name:'Generate:Biomedicines · 101 South St',lat:42.3747865,lng:-71.0910600};
-  var STATES=[{cls:'s0',label:'Not confirmed'},{cls:'s1',label:'Confirmed ✓'},{cls:'s2',label:'Left message'},{cls:'s3',label:'No / N/A'}];
-  var SKEY='nate_appt_status_v1';
-  var status={};
-  try{ status=JSON.parse(localStorage.getItem(SKEY)||'{}')||{}; }catch(e){ status={}; }
-  var urlst=new URLSearchParams(location.search).get('st');
-  if(urlst){ urlst.split(',').forEach(function(p){var a=p.split(':'); if(a[0])status[a[0]]=parseInt(a[1],10)||0;}); }
-  function save(){ try{localStorage.setItem(SKEY,JSON.stringify(status));}catch(e){} }
+  var STATUS=[
+    {v:'todo',label:'— Not started',cat:'todo'},
+    {v:'called',label:'Called — no answer',cat:'amber'},
+    {v:'vm',label:'Left voicemail',cat:'amber'},
+    {v:'texted',label:'Texted',cat:'amber'},
+    {v:'emailed',label:'Emailed',cat:'amber'},
+    {v:'waiting',label:'Waiting to hear back',cat:'amber'},
+    {v:'scheduled',label:'Tour scheduled',cat:'green'},
+    {v:'confirmed',label:'Confirmed',cat:'green'},
+    {v:'toured',label:'Toured ✓',cat:'green'},
+    {v:'noavail',label:'No availability',cat:'red'},
+    {v:'passed',label:'Passed / not a fit',cat:'red'}
+  ];
+  var CATCOLOR={green:'#15803d',amber:'#b45309',red:'#b91c1c',todo:'#ffffff'};
+  function catOf(v){var s=STATUS.find(function(x){return x.v===v;});return s?s.cat:'todo';}
+  // Shared statuses I maintain for everyone (updated when Peter tells me): {key:{s:status,n:note}}
+  var SEED={};
+  var SKEY='nate_contact_tracker_v1';
+  var state={};
+  Object.keys(SEED).forEach(function(k){state[k]={s:SEED[k].s||'todo',n:SEED[k].n||''};});
+  try{var ls=JSON.parse(localStorage.getItem(SKEY)||'{}');Object.keys(ls).forEach(function(k){state[k]=ls[k];});}catch(e){}
+  try{var dq=new URLSearchParams(location.search).get('d');if(dq){var o=JSON.parse(decodeURIComponent(escape(atob(dq))));Object.keys(o).forEach(function(k){state[k]=o[k];});}}catch(e){}
+  function st(k){return state[k]||{s:'todo',n:''};}
+  function save(){try{localStorage.setItem(SKEY,JSON.stringify(state));}catch(e){}}
 
   var map=L.map('map',{scrollWheelZoom:false});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
   var markers={},pts=[];
-  function ring(st){ return st===1?'#15803d':st===2?'#b45309':st===3?'#b91c1c':'#ffffff'; }
   function micon(b){
-    var st=status[b.k]||0;
-    var h='<div style="background:'+TIER[b.t]+';border:3px solid '+ring(st)+';color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.45)">'+b.n+'</div>';
+    var rc=CATCOLOR[catOf(st(b.k).s)];
+    var h='<div style="background:'+TIER[b.t]+';border:3px solid '+rc+';color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.45)">'+b.n+'</div>';
     return L.divIcon({html:h,className:'',iconSize:[26,26],iconAnchor:[13,13]});
   }
   B.forEach(function(b){
@@ -423,51 +446,57 @@
 
   var trk=document.getElementById('trk');
   var labels={1:'Tier 1 · closest to the office',2:'Tier 2 · Assembly Row & Medford',3:'Tier 3 · Chelsea / Revere (low priority)'};
+  function opts(sel){return STATUS.map(function(s){return '<option value="'+s.v+'"'+(s.v===sel?' selected':'')+'>'+s.label+'</option>';}).join('');}
+  function esc(x){return String(x||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
   var html='';
   [1,2,3].forEach(function(t){
     html+='<div class="trk-tier">'+labels[t]+'</div>';
     B.filter(function(b){return b.t===t;}).forEach(function(b){
-      var st=status[b.k]||0;
+      var s=st(b.k);
       html+='<div class="trk-row"><span class="num" style="background:'+TIER[b.t]+'">'+b.n+'</span>'
         +'<span class="tn">'+b.name+(b.call?' <span class="callt">☎ call today</span>':'')
         +'<span class="tnote">'+b.note+' · '+b.ph+'</span></span>'
-        +'<button class="pill '+STATES[st].cls+'" data-k="'+b.k+'">'+STATES[st].label+'</button></div>';
+        +'<select class="sel cat-'+catOf(s.s)+'" data-k="'+b.k+'">'+opts(s.s)+'</select>'
+        +'<input class="note" data-k="'+b.k+'" placeholder="notes…" value="'+esc(s.n)+'"></div>';
     });
   });
   trk.innerHTML=html;
 
   function summary(){
-    var c=0,need=0;
-    B.forEach(function(b){var st=status[b.k]||0; if(st===1)c++; if(b.call&&!(st===1||st===3))need++;});
-    document.getElementById('sumc').textContent=c;
-    document.getElementById('sump').textContent=need;
+    var g=0,a=0,td=0;
+    B.forEach(function(b){var c=catOf(st(b.k).s); if(c==='green')g++; else if(c==='amber')a++; else if(c==='todo')td++;});
+    document.getElementById('sumSched').textContent=g;
+    document.getElementById('sumContact').textContent=a;
+    document.getElementById('sumTodo').textContent=td;
   }
   summary();
 
-  trk.addEventListener('click',function(e){
-    var btn=e.target.closest('.pill'); if(!btn)return;
-    var k=btn.getAttribute('data-k'); var nx=((status[k]||0)+1)%STATES.length;
-    status[k]=nx; save();
-    btn.className='pill '+STATES[nx].cls; btn.textContent=STATES[nx].label;
-    var b=B.find(function(x){return x.k===k;}); if(b)markers[k].setIcon(micon(b));
-    summary();
+  function setState(k,patch){var cur=st(k);state[k]={s:patch.s!=null?patch.s:cur.s,n:patch.n!=null?patch.n:cur.n};save();}
+  trk.addEventListener('change',function(e){
+    var el=e.target,k=el.getAttribute('data-k'); if(!k)return;
+    if(el.classList.contains('sel')){
+      setState(k,{s:el.value});
+      el.className='sel cat-'+catOf(el.value);
+      var b=B.find(function(x){return x.k===k;}); if(b)markers[k].setIcon(micon(b));
+      summary();
+    } else if(el.classList.contains('note')){ setState(k,{n:el.value}); }
   });
+  trk.addEventListener('input',function(e){ if(e.target.classList.contains('note')){ setState(e.target.getAttribute('data-k'),{n:e.target.value}); } });
 
   var cl=document.getElementById('copylink');
   cl.addEventListener('click',function(){
-    var parts=[]; B.forEach(function(b){var st=status[b.k]||0; if(st)parts.push(b.k+':'+st);});
-    var url=location.origin+location.pathname+(parts.length?('?st='+parts.join(',')):'');
-    var ok=function(){cl.textContent='✓ Copied — paste to Dana/Nate';setTimeout(function(){cl.textContent='Copy shareable status link';},2500);};
+    var out={}; B.forEach(function(b){var v=state[b.k]; if(v&&((v.s&&v.s!=='todo')||v.n))out[b.k]=v;});
+    var enc=btoa(unescape(encodeURIComponent(JSON.stringify(out))));
+    var url=location.origin+location.pathname+(Object.keys(out).length?('?d='+enc):'');
+    var ok=function(){cl.textContent='✓ Copied — paste to Dana/Nate';setTimeout(function(){cl.textContent='Copy shareable link';},2500);};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(ok,function(){prompt('Copy this link:',url);});}
     else{prompt('Copy this link:',url);}
   });
 
   document.getElementById('resetstatus').addEventListener('click',function(){
-    if(!confirm('Clear all appointment statuses?'))return;
-    status={}; save();
-    B.forEach(function(b){markers[b.k].setIcon(micon(b));});
-    trk.querySelectorAll('.pill').forEach(function(btn){btn.className='pill s0';btn.textContent=STATES[0].label;});
-    summary();
+    if(!confirm('Clear your local edits and show the shared version?'))return;
+    try{localStorage.removeItem(SKEY);}catch(e){}
+    location.href=location.origin+location.pathname;
   });
 })();
 </script>
