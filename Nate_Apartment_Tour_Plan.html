@@ -72,7 +72,30 @@
   .legend b{color:var(--ink)}
   .note{font-size:12px;color:var(--muted);margin-top:6px}
   @media print{body{background:#fff}.b,.day,.logi div{break-inside:avoid}}
+  /* map + tracker */
+  #map{height:460px;border-radius:12px;border:1px solid var(--line);z-index:0;margin-bottom:12px}
+  .leaflet-container{font:inherit}
+  .trk-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:10px}
+  .trk-sum{font-size:14px}
+  .trk-actions{display:flex;gap:8px}
+  .act{font:600 13px inherit;border:1px solid var(--mon);background:var(--monbg);color:var(--mon);border-radius:8px;padding:7px 12px;cursor:pointer}
+  .act.ghost{border-color:var(--line);background:#fff;color:var(--muted)}
+  .act:hover{filter:brightness(.97)}
+  .trk{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .trk-tier{background:#eef1f5;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;padding:6px 14px}
+  .trk-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line)}
+  .trk-row .num{flex:0 0 24px;height:24px;border-radius:50%;color:#fff;font:700 12px inherit;display:flex;align-items:center;justify-content:center}
+  .trk-row .tn{flex:1;font-size:14px;font-weight:600;display:flex;flex-direction:column}
+  .trk-row .tnote{font-weight:400;color:var(--muted);font-size:12px;margin-top:1px}
+  .callt{display:inline-block;background:var(--warnbg);color:var(--warn);font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px}
+  .pill{flex:0 0 auto;cursor:pointer;border:1px solid;border-radius:20px;font:700 12px inherit;padding:5px 12px;min-width:122px;text-align:center}
+  .pill.s0{background:#f4f5f7;color:#8792a2;border-color:#e2e6ec}
+  .pill.s1{background:var(--goodbg);color:var(--good);border-color:#bfe3ca}
+  .pill.s2{background:var(--warnbg);color:var(--warn);border-color:#f0d9a8}
+  .pill.s3{background:#fdeceb;color:#b91c1c;border-color:#f3c9c6}
+  @media(max-width:640px){.pill{min-width:100px}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
 <div class="wrap">
@@ -94,6 +117,16 @@
   that are either open Sunday (AVA North Point) or tour <b>by appointment</b> (Verge, 262 O'Brien condo, Metro9, Mason).
   Call/request those appointments <b>now</b> to lock Sunday-afternoon slots. AVA and Vero are walk-in fallbacks if bookings fall through.
 </div>
+
+<!-- ============ MAP + TRACKER ============ -->
+<h2 id="maptracker">Map &amp; appointment tracker</h2>
+<p class="note">Pins are numbered to match the list below and colored by tier — <b style="color:#0f766e">teal</b> = closest to the office, <b style="color:#7c3aed">purple</b> = Assembly Row / Medford, <b style="color:#64748b">slate</b> = outer (Chelsea / Revere). The red ★ is Nate's office. Click a status button as you finish each call today — picks are saved in this browser, and the marker ring turns green when confirmed. Hit "Copy shareable status link" to send the confirmed set to Dana &amp; Nate.</p>
+<div id="map"></div>
+<div class="trk-bar">
+  <div class="trk-sum"><b id="sumc">0</b> confirmed &nbsp;·&nbsp; <b id="sump">6</b> appointments still to call today</div>
+  <div class="trk-actions"><button id="copylink" class="act">Copy shareable status link</button><button id="resetstatus" class="act ghost">Reset</button></div>
+</div>
+<div id="trk" class="trk"></div>
 
 <!-- ============ SCHEDULE ============ -->
 <h2>Proposed schedule</h2>
@@ -335,5 +368,108 @@
 <p class="note">Rents are "total monthly" incl. mandatory fees where the property reports it that way; broker/condo figures are asking rent. †Vero likely income-restricted. All pricing/availability shifts daily — confirm at tour. Drive times are estimates from the properties' locations vs. 101 South St; verify in your maps app the morning of.</p>
 
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function(){
+  var TIER={1:'#0f766e',2:'#7c3aed',3:'#64748b'};
+  var B=[
+    {n:1,k:'verge',name:'Verge Residences',t:1,lat:42.3735219,lng:-71.0871594,call:1,note:'Sun/Mon by appointment · elec. incl',ph:'(857) 320-3245'},
+    {n:2,k:'union346',name:'Union 346',t:1,lat:42.3805970,lng:-71.0986260,call:1,note:'Mon 10–5 · confirm a 1BR is live',ph:'844-927-3883'},
+    {n:3,k:'mason',name:'Mason',t:1,lat:42.3749834,lng:-71.0897557,call:1,note:'By appointment (agent, Senné)',ph:'via listing agent'},
+    {n:4,k:'metro9',name:'Metro9',t:1,lat:42.3740726,lng:-71.0870524,call:1,note:'By appt (broker) · parking incl',ph:'(617) 819-7611'},
+    {n:5,k:'ava',name:'AVA North Point',t:1,lat:42.3703969,lng:-71.0741554,call:0,note:'Open Sun & Mon 9–7 (walk-in)',ph:'(857) 971-3923'},
+    {n:6,k:'obrien',name:"262 O'Brien Hwy #204",t:1,lat:42.3732481,lng:-71.0819525,call:1,note:'By appt via Zillow · parking incl',ph:'Zillow request'},
+    {n:7,k:'zinc',name:'Zinc',t:1,lat:42.3729696,lng:-71.0786142,call:0,note:'Mon 9–6 · ask for Unit 921',ph:'(617) 674-0760'},
+    {n:8,k:'revolution',name:'Revolution at Assembly Row',t:2,lat:42.3920136,lng:-71.0787725,call:0,note:'Mon 9–6 · walk from The Row',ph:'855-642-4679'},
+    {n:9,k:'montaje',name:'Montaje',t:2,lat:42.3942109,lng:-71.0799629,call:0,note:'Mon 9–6 · walk from The Row',ph:'(857) 382-3634'},
+    {n:10,k:'miscela',name:'Miscela',t:2,lat:42.3932179,lng:-71.0790346,call:0,note:'Mon 9–6 · walk from The Row',ph:'(857) 567-8128'},
+    {n:11,k:'sphere',name:'Sphere Luxury',t:2,lat:42.4008008,lng:-71.1120546,call:0,note:'Mon 9–5 · Ball Sq (Green)',ph:'(781) 881-6994'},
+    {n:12,k:'stationlanding',name:'Station Landing',t:2,lat:42.4035957,lng:-71.0803857,call:0,note:'Mon 8–5 · Wellington',ph:'(781) 306-0250'},
+    {n:13,k:'windsor',name:'Windsor Mystic River',t:2,lat:42.4086374,lng:-71.0926768,call:0,note:'Mon 9–6 · Wellington',ph:'(781) 973-8743'},
+    {n:14,k:'re150',name:'RE150',t:2,lat:42.4099264,lng:-71.0760897,call:0,note:'Mon 9–6 · Medford (labeled Revere)',ph:'(781) 393-8300'},
+    {n:15,k:'vero',name:'Vero',t:3,lat:42.3993010,lng:-71.0420511,call:0,note:'Sun 12–5 walk-in · likely income-restricted',ph:'(857) 323-9674'},
+    {n:16,k:'onewebster',name:'One Webster',t:3,lat:42.3991384,lng:-71.0204169,call:0,note:'Mon 9–7 · Chelsea',ph:'(617) 336-0217'},
+    {n:17,k:'revio',name:'Revio Revere Beach',t:3,lat:42.4154057,lng:-70.9896415,call:1,note:'Call to confirm hours · farthest',ph:'(866) 545-3549'}
+  ];
+  var OFFICE={name:'Generate:Biomedicines · 101 South St',lat:42.3747865,lng:-71.0910600};
+  var STATES=[{cls:'s0',label:'Not confirmed'},{cls:'s1',label:'Confirmed ✓'},{cls:'s2',label:'Left message'},{cls:'s3',label:'No / N/A'}];
+  var SKEY='nate_appt_status_v1';
+  var status={};
+  try{ status=JSON.parse(localStorage.getItem(SKEY)||'{}')||{}; }catch(e){ status={}; }
+  var urlst=new URLSearchParams(location.search).get('st');
+  if(urlst){ urlst.split(',').forEach(function(p){var a=p.split(':'); if(a[0])status[a[0]]=parseInt(a[1],10)||0;}); }
+  function save(){ try{localStorage.setItem(SKEY,JSON.stringify(status));}catch(e){} }
+
+  var map=L.map('map',{scrollWheelZoom:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
+  var markers={},pts=[];
+  function ring(st){ return st===1?'#15803d':st===2?'#b45309':st===3?'#b91c1c':'#ffffff'; }
+  function micon(b){
+    var st=status[b.k]||0;
+    var h='<div style="background:'+TIER[b.t]+';border:3px solid '+ring(st)+';color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.45)">'+b.n+'</div>';
+    return L.divIcon({html:h,className:'',iconSize:[26,26],iconAnchor:[13,13]});
+  }
+  B.forEach(function(b){
+    var m=L.marker([b.lat,b.lng],{icon:micon(b)}).addTo(map);
+    m.bindPopup('<b>'+b.n+'. '+b.name+'</b><br>'+b.note+'<br>'+b.ph);
+    m.bindTooltip(b.n+'. '+b.name,{direction:'top',offset:[0,-12]});
+    markers[b.k]=m; pts.push([b.lat,b.lng]);
+  });
+  var oi=L.divIcon({html:'<div style="background:#b91c1c;color:#fff;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font:700 15px sans-serif;box-shadow:0 1px 5px rgba(0,0,0,.5)">★</div>',className:'',iconSize:[30,30],iconAnchor:[15,15]});
+  L.marker([OFFICE.lat,OFFICE.lng],{icon:oi}).addTo(map).bindPopup('<b>'+OFFICE.name+'</b><br>Work (has parking)').bindTooltip('★ Work: Generate',{direction:'top'});
+  pts.push([OFFICE.lat,OFFICE.lng]);
+  map.fitBounds(pts,{padding:[35,35]});
+
+  var trk=document.getElementById('trk');
+  var labels={1:'Tier 1 · closest to the office',2:'Tier 2 · Assembly Row & Medford',3:'Tier 3 · Chelsea / Revere (low priority)'};
+  var html='';
+  [1,2,3].forEach(function(t){
+    html+='<div class="trk-tier">'+labels[t]+'</div>';
+    B.filter(function(b){return b.t===t;}).forEach(function(b){
+      var st=status[b.k]||0;
+      html+='<div class="trk-row"><span class="num" style="background:'+TIER[b.t]+'">'+b.n+'</span>'
+        +'<span class="tn">'+b.name+(b.call?' <span class="callt">☎ call today</span>':'')
+        +'<span class="tnote">'+b.note+' · '+b.ph+'</span></span>'
+        +'<button class="pill '+STATES[st].cls+'" data-k="'+b.k+'">'+STATES[st].label+'</button></div>';
+    });
+  });
+  trk.innerHTML=html;
+
+  function summary(){
+    var c=0,need=0;
+    B.forEach(function(b){var st=status[b.k]||0; if(st===1)c++; if(b.call&&!(st===1||st===3))need++;});
+    document.getElementById('sumc').textContent=c;
+    document.getElementById('sump').textContent=need;
+  }
+  summary();
+
+  trk.addEventListener('click',function(e){
+    var btn=e.target.closest('.pill'); if(!btn)return;
+    var k=btn.getAttribute('data-k'); var nx=((status[k]||0)+1)%STATES.length;
+    status[k]=nx; save();
+    btn.className='pill '+STATES[nx].cls; btn.textContent=STATES[nx].label;
+    var b=B.find(function(x){return x.k===k;}); if(b)markers[k].setIcon(micon(b));
+    summary();
+  });
+
+  var cl=document.getElementById('copylink');
+  cl.addEventListener('click',function(){
+    var parts=[]; B.forEach(function(b){var st=status[b.k]||0; if(st)parts.push(b.k+':'+st);});
+    var url=location.origin+location.pathname+(parts.length?('?st='+parts.join(',')):'');
+    var ok=function(){cl.textContent='✓ Copied — paste to Dana/Nate';setTimeout(function(){cl.textContent='Copy shareable status link';},2500);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(ok,function(){prompt('Copy this link:',url);});}
+    else{prompt('Copy this link:',url);}
+  });
+
+  document.getElementById('resetstatus').addEventListener('click',function(){
+    if(!confirm('Clear all appointment statuses?'))return;
+    status={}; save();
+    B.forEach(function(b){markers[b.k].setIcon(micon(b));});
+    trk.querySelectorAll('.pill').forEach(function(btn){btn.className='pill s0';btn.textContent=STATES[0].label;});
+    summary();
+  });
+})();
+</script>
 </body>
 </html>
