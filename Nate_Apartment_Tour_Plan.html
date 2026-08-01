@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nate — Apartment Tour Plan · Aug 2–3, 2026</title>
+<style>
+  :root{
+    --ink:#1a2230; --muted:#5b6472; --line:#e2e6ec; --bg:#f6f7f9;
+    --sun:#c2410c; --sunbg:#fff3ec; --mon:#1d4ed8; --monbg:#eef3ff;
+    --good:#15803d; --goodbg:#eaf6ee; --warn:#b45309; --warnbg:#fdf4e3;
+    --card:#ffffff; --chip:#eef1f5; --t1:#0f766e; --t2:#7c3aed; --t3:#64748b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.5;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+  header.top{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:22px}
+  h1{font-size:26px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:14px}
+  h2{font-size:20px;margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:16px;margin:0 0 2px}
+  a{color:#1d4ed8;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .logi{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 6px}
+  .logi div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;flex:1;min-width:180px}
+  .logi b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:2px}
+  .callout{background:var(--warnbg);border:1px solid #f0d9a8;border-left:4px solid var(--warn);
+           border-radius:8px;padding:12px 16px;margin:14px 0}
+  .callout b{color:var(--warn)}
+  /* schedule */
+  .day{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px}
+  .dayhead{padding:12px 18px;font-weight:700;font-size:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+  .sun .dayhead{background:var(--sun)}
+  .mon .dayhead{background:var(--mon)}
+  .dayhead .win{font-weight:500;font-size:13px;opacity:.95}
+  .stop{display:flex;gap:14px;padding:12px 18px;border-top:1px solid var(--line)}
+  .stop:first-of-type{border-top:none}
+  .time{flex:0 0 78px;font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+  .sun .time{color:var(--sun)} .mon .time{color:var(--mon)}
+  .what{flex:1}
+  .what .m{color:var(--muted);font-size:13.5px;margin-top:2px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle}
+  .walkin{background:var(--goodbg);color:var(--good)}
+  .appt{background:var(--warnbg);color:var(--warn)}
+  .drive{background:var(--chip);color:var(--muted);font-style:italic}
+  .drivestop{padding:6px 18px;color:var(--muted);font-size:12.5px;font-style:italic;border-top:1px dashed var(--line);background:#fafbfc}
+  /* building cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(325px,1fr));gap:14px}
+  .b{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+  .b .row1{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .b .addr{color:var(--muted);font-size:12.5px;margin:2px 0 8px}
+  .tier{font-size:10.5px;font-weight:700;color:#fff;border-radius:5px;padding:2px 7px;white-space:nowrap}
+  .tier1{background:var(--t1)} .tier2{background:var(--t2)} .tier3{background:var(--t3)}
+  .unit{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+  .unit.star{background:#fffdf3;border-color:#f2e3ad}
+  .unit .u{font-weight:700}
+  .kv{font-size:13px;color:var(--ink);margin:3px 0}
+  .kv span{color:var(--muted)}
+  .hrs{display:flex;gap:8px;margin-top:8px;font-size:12.5px}
+  .hrs div{flex:1;border-radius:7px;padding:6px 8px;text-align:center}
+  .hclosed{background:#f4f5f7;color:#98a1af}
+  .hopen{background:var(--goodbg);color:var(--good);font-weight:600}
+  .happt{background:var(--warnbg);color:var(--warn);font-weight:600}
+  .foot{font-size:12px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#eef1f5;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:8px 0 2px}
+  .legend b{color:var(--ink)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  @media print{body{background:#fff}.b,.day,.logi div{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>Nate — Apartment Tour Weekend</h1>
+  <div class="sub">Greater Somerville · Sunday Aug 2 &amp; Monday Aug 3, 2026 · Criteria: 1BR, ≥600 sqft, &lt;$4,000/mo ·
+  <a href="https://maps.app.goo.gl/hWJJtjxqouufdyb79" target="_blank">Google map</a></div>
+  <div class="logi">
+    <div><b>Work (anchor)</b>Generate:Biomedicines<br>101 South St, Somerville — has parking</div>
+    <div><b>Sun arrival</b>Land Logan 1:30p · rental car · rolling ~2:15p</div>
+    <div><b>Sun night</b>The Row, Assembly Square</div>
+    <div><b>Mon deadline</b>Nate flies Logan 4:00p → leave last tour ~1:15p</div>
+  </div>
+</header>
+
+<div class="callout">
+  <b>Do this Saturday (today):</b> Most leasing offices are <b>closed Sundays</b>. The Sunday plan below leans on the buildings
+  that are either open Sunday (AVA North Point) or tour <b>by appointment</b> (Verge, 262 O'Brien condo, Metro9, Mason).
+  Call/request those appointments <b>now</b> to lock Sunday-afternoon slots. AVA and Vero are walk-in fallbacks if bookings fall through.
+</div>
+
+<!-- ============ SCHEDULE ============ -->
+<h2>Proposed schedule</h2>
+<p class="note">Logic: closer to the office wins. Sunday you're coming from Logan into the East Cambridge / Union Sq cluster (all &lt;6 min from work, and next to your hotel) using the appointment-only + Sunday-open buildings. Monday morning is the Assembly Row trio — a walk from The Row — plus Union Square and Cambridge, then straight to the airport. Everett / Chelsea / Revere are optional low-priority stops only if you're ahead of schedule.</p>
+
+<div class="day sun">
+  <div class="dayhead"><span>Sunday, Aug 2 — East Cambridge &amp; Union Sq cluster</span><span class="win">~2:15p – 6:00p · end at hotel</span></div>
+  <div class="drivestop">▸ Depart Logan ~2:15p → East Cambridge ≈ 15–20 min <em>(optional: detour through Chelsea for Vero, open Sun 12–5)</em></div>
+  <div class="stop"><div class="time">2:45p</div><div class="what"><b>AVA North Point</b> · 2 Leighton St, Cambridge <span class="tag walkin">walk-in · open 9–7</span><div class="m">Anchor stop — no appointment needed. Rep 1BR: 668 sqft $3,668. Next to Lechmere.</div></div></div>
+  <div class="drivestop">▸ 3 min</div>
+  <div class="stop"><div class="time">3:30p</div><div class="what"><b>262 Mons. O'Brien Hwy #204</b> (condo) · Cambridge <span class="tag appt">by appt · Zillow</span><div class="m">Unit 204: $3,150, 753 sqft, <b>garage parking included</b>, no broker fee — best all-in value. Request tour on Zillow.</div></div></div>
+  <div class="drivestop">▸ 5 min</div>
+  <div class="stop"><div class="time">4:15p</div><div class="what"><b>Verge Residences</b> · 20 Medford St, Somerville <span class="tag appt">by appt</span><div class="m">Unit 202: $3,650, 728 sqft, <b>electricity included</b>. Closest building to the office (~3–5 min). Call (857) 320-3245.</div></div></div>
+  <div class="drivestop">▸ 5 min</div>
+  <div class="stop"><div class="time">5:00p</div><div class="what"><b>Metro9</b> · 9 Medford St, Somerville <span class="tag appt">by appt · broker</span><div class="m">Unit 513: $3,800, 1,006 sqft, <b>garage parking included</b>, avail Sep 1. Broker (617) 819-7611. <em>(Swap for Mason, Union Sq, if you prefer.)</em></div></div></div>
+  <div class="drivestop">▸ ~6 min → check in at The Row, Assembly Square</div>
+</div>
+
+<div class="day mon">
+  <div class="dayhead"><span>Monday, Aug 3 — Assembly Row (walkable) → Union Sq / Cambridge → Logan</span><span class="win">9:00a – ~1:15p</span></div>
+  <div class="stop"><div class="time">9:00a</div><div class="what"><b>Revolution at Assembly Row</b> · 290 Revolution Dr <span class="tag walkin">walk from hotel · open 9</span><div class="m">Unit 525: $3,475, 750 sqft (avail 10/6). Assembly Orange Line.</div></div></div>
+  <div class="drivestop">▸ 3–5 min walk</div>
+  <div class="stop"><div class="time">9:45a</div><div class="what"><b>Montaje</b> · 449 Canal St <span class="tag walkin">walk · open 9</span><div class="m">Confirm Unit 0540; rep 1BR 696 sqft $3,175.</div></div></div>
+  <div class="drivestop">▸ 3–5 min walk</div>
+  <div class="stop"><div class="time">10:30a</div><div class="what"><b>Miscela</b> · 485 Foley St <span class="tag walkin">walk · open 9</span><div class="m">Confirm Unit 1104; rep tower 1BR 617 sqft $3,405. Closest to Assembly T.</div></div></div>
+  <div class="drivestop">▸ drive ~8 min</div>
+  <div class="stop"><div class="time">11:15a</div><div class="what"><b>Union 346</b> · 346 Somerville Ave, Union Sq <span class="tag appt">opens 10</span><div class="m">Adjacent to the office. <b>No qualifying 1BR live right now</b> — call ahead (844-927-3883) to confirm before committing the slot.</div></div></div>
+  <div class="drivestop">▸ drive ~8 min</div>
+  <div class="stop"><div class="time">11:55a</div><div class="what"><b>Zinc</b> · 22 Water St, Cambridge <span class="tag walkin">open 9–6</span><div class="m">Ask for Unit 921 (available later than desired); rep 1BR 741 sqft ~$3,555+. Cambridge Crossing.</div></div></div>
+  <div class="drivestop">▸ Depart ~12:45–1:15p for Logan (~20–25 min + car return). <em>Optional if ahead: Sphere (Ball Sq) before noon, or One Webster / Vero on the way east to the airport.</em></div>
+  <div class="stop"><div class="time">4:00p</div><div class="what"><b>Nate's flight — Logan</b></div></div>
+</div>
+
+<div class="legend">
+  <span><span class="tag walkin">walk-in</span> open, no appointment</span>
+  <span><span class="tag appt">by appt</span> book ahead</span>
+  <span><b>Bold unit #</b> = Nate's flagged unit</span>
+</div>
+
+<!-- ============ BUILDINGS ============ -->
+<h2>Building directory — Tier 1: closest to the office (~2–6 min)</h2>
+<div class="grid">
+
+  <div class="b">
+    <div class="row1"><h3>Verge Residences</h3><span class="tier tier1">~3–5 min</span></div>
+    <div class="addr">20 Medford St, Somerville · Union Sq / Lechmere (Green), ~0.6 mi</div>
+    <div class="unit star"><span class="u">Unit 202 (flagged)</span> · $3,650 · 728 sqft · avail now · electricity included</div>
+    <div class="kv"><span>Also:</span> #317 $3,350/643sf · #407 $3,850/811sf</div>
+    <div class="kv"><span>Parking:</span> garage $460/mo, EV charging</div>
+    <div class="hrs"><div class="happt">Sun: by appt</div><div class="happt">Mon: by appt</div></div>
+    <div class="foot"><a href="https://www.apartments.com/verge-residences-somerville-ma/hsm0x83/" target="_blank">Listing ↗</a><span>(857) 320-3245</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Union 346</h3><span class="tier tier1">~2–4 min</span></div>
+    <div class="addr">346 Somerville Ave, Somerville · Union Sq (Green), ~3 min walk</div>
+    <div class="unit">1BR+Den ~724 sqft — price/availability "call for details." <b>No qualifying 1BR live now</b> (studios only).</div>
+    <div class="kv"><span>Parking:</span> on-site (confirm rate)</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 10–5</div></div>
+    <div class="foot"><a href="https://www.union346.com/floorplans" target="_blank">Floor plans ↗</a><span>844-927-3883</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Mason</h3><span class="tier tier1">~3–4 min</span></div>
+    <div class="addr">3 &amp; 14 Ward St, Somerville · Union Sq (Green), ~0.5 mi</div>
+    <div class="unit">1BR ~854 sqft from ~$3,000 (3 Ward St) — currently "check back soon." 14 Ward live listing is a 2BR $4,100.</div>
+    <div class="kv"><span>Parking:</span> underground heated garage</div>
+    <div class="hrs"><div class="happt">Sun: by agent</div><div class="happt">Mon: by agent</div></div>
+    <div class="foot"><a href="https://www.apartments.com/3-ward-st-somerville-ma/0rekbe2/" target="_blank">Listing ↗</a><span>Joyce Fung, Senné</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Metro9</h3><span class="tier tier1">~4–6 min</span></div>
+    <div class="addr">9 Medford St, Somerville · Union Sq / Lechmere (Green), ~12 min</div>
+    <div class="unit star"><span class="u">Unit 513 (flagged)</span> · $3,800 · 1,006 sqft (1BR+den) · avail Sep 1 · parking included</div>
+    <div class="kv"><span>Parking:</span> 1 garage space included (+ water/sewer/trash)</div>
+    <div class="hrs"><div class="happt">Sun: by appt</div><div class="happt">Mon: by appt</div></div>
+    <div class="foot"><a href="https://www.apartments.com/9-medford-st-somerville-ma-unit-513/fyj4kqv/" target="_blank">Listing ↗</a><span>(617) 819-7611</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>AVA North Point</h3><span class="tier tier1">~4–6 min</span></div>
+    <div class="addr">2 Leighton St, Cambridge · Lechmere (Green), ~0.2 mi / 4 min</div>
+    <div class="unit">#140: $3,668 · 668 sqft (avail 9/5) · #118: $3,748 · 738 sqft (avail 8/24)</div>
+    <div class="kv"><span>Parking:</span> covered garage (rate ~$250–350, confirm)</div>
+    <div class="hrs"><div class="hopen">Sun: 9–7</div><div class="hopen">Mon: 9–7</div></div>
+    <div class="foot"><a href="https://www.apartments.com/ava-north-point-cambridge-ma/720dv4y/" target="_blank">Listing ↗</a><span>(857) 971-3923</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>262 O'Brien Hwy #204</h3><span class="tier tier1">~4–6 min</span></div>
+    <div class="addr">262 Monsignor O'Brien Hwy #204, Cambridge · Lechmere (Green), ~3 min</div>
+    <div class="unit star"><span class="u">Unit 204 (flagged)</span> · $3,150 · 753 sqft · <b>garage parking incl · no broker fee</b> · avail now</div>
+    <div class="kv"><span>Note:</span> individually-listed condo — tour via Zillow "Request a tour"</div>
+    <div class="hrs"><div class="happt">Sun: by appt</div><div class="happt">Mon: by appt</div></div>
+    <div class="foot"><a href="https://www.zillow.com/homedetails/262-Monsignor-Obrien-Hwy-204-Cambridge-MA-02141/325584233_zpid/" target="_blank">Zillow ↗</a><span>via Zillow</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Zinc</h3><span class="tier tier1">~4–6 min</span></div>
+    <div class="addr">22 Water St, Cambridge · Cambridge Crossing · Lechmere (Green), ~0.3 mi</div>
+    <div class="unit star"><span class="u">Unit 921 (flagged)</span> · likely A6/A8 plan · ~741–785 sqft · ~$3,555+ · avail later than desired</div>
+    <div class="kv"><span>Also:</span> A6 741sf $3,555–3,880 · A8 785sf $3,786+</div>
+    <div class="kv"><span>Parking:</span> underground garage ~$300/mo</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–6</div></div>
+    <div class="foot"><a href="https://livezinc.com/floorplans/" target="_blank">Floor plans ↗</a><span>(617) 674-0760</span></div>
+  </div>
+
+</div>
+
+<h2>Building directory — Tier 2: Assembly Row &amp; Medford (~8–13 min)</h2>
+<div class="grid">
+
+  <div class="b">
+    <div class="row1"><h3>Revolution at Assembly Row</h3><span class="tier tier2">~8–12 min</span></div>
+    <div class="addr">290 Revolution Dr, Somerville · Assembly (Orange), ~5–8 min · <em>walk from The Row</em></div>
+    <div class="unit star"><span class="u">Unit 525 (flagged)</span> · $3,475 · 750 sqft · avail 10/6</div>
+    <div class="kv"><span>Also:</span> #509 607sf $3,132 · #460 723sf $3,385</div>
+    <div class="kv"><span>Parking:</span> on-site garage (confirm rate) · self-guided tours available</div>
+    <div class="hrs"><div class="hclosed">Sun: closed*</div><div class="hopen">Mon: 9–6</div></div>
+    <div class="foot"><a href="https://www.revolutionassemblyrow.com/floor-plans/" target="_blank">Floor plans ↗</a><span>855-642-4679</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Montaje</h3><span class="tier tier2">~8–12 min</span></div>
+    <div class="addr">449 Canal St, Somerville · Assembly (Orange), ~7–10 min · <em>walk from The Row</em></div>
+    <div class="unit star"><span class="u">Unit 0540 (flagged)</span> · confirm price w/ leasing (5th-floor unit)</div>
+    <div class="kv"><span>Rep 1BR:</span> M-B3 696sf $3,175 · B-B2 738sf $3,560</div>
+    <div class="kv"><span>Parking:</span> garage (confirm rate)</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–6</div></div>
+    <div class="foot"><a href="https://livemontaje.com/floorplans/" target="_blank">Floor plans ↗</a><span>(857) 382-3634</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Miscela</h3><span class="tier tier2">~10 min</span></div>
+    <div class="addr">485 Foley St, Somerville · Assembly (Orange), ~3–5 min · <em>walk from The Row</em></div>
+    <div class="unit star"><span class="u">Unit 1104 (flagged)</span> · 11th-floor tower · confirm w/ leasing</div>
+    <div class="kv"><span>Rep 1BR:</span> T-B5 617sf $3,405 · W-B9 613sf $3,276</div>
+    <div class="kv"><span>Parking:</span> ~$350/mo</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–6</div></div>
+    <div class="foot"><a href="https://livemiscela.com/floorplans/" target="_blank">Floor plans ↗</a><span>(857) 567-8128</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Sphere Luxury</h3><span class="tier tier2">~8 min</span></div>
+    <div class="addr">640 Boston Ave, Medford · Ball Square (Green), ~2–5 min — best transit</div>
+    <div class="unit">1BR ~669 sqft · $3,775–3,995 (tight to budget; 1-mo-free specials reported)</div>
+    <div class="kv"><span>Parking:</span> onsite covered garage (confirm rate)</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–5</div></div>
+    <div class="foot"><a href="https://sphereluxuryapartments.com/floorplans" target="_blank">Floor plans ↗</a><span>(781) 881-6994</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Station Landing</h3><span class="tier tier2">~10 min</span></div>
+    <div class="addr">50–55 Station Landing, Medford · Wellington (Orange), ~5–8 min</div>
+    <div class="unit">Plan 1B 693sf from ~$2,942 · Plan 1.0 750sf from ~$3,225</div>
+    <div class="kv"><span>Parking:</span> covered — a space included</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 8–5</div></div>
+    <div class="foot"><a href="https://stationlandingapts.com/floorplans/" target="_blank">Floor plans ↗</a><span>(781) 306-0250</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Windsor Mystic River</h3><span class="tier tier2">~10 min</span></div>
+    <div class="addr">61 Locust St, Medford · Wellington (Orange), ~0.5–0.8 mi</div>
+    <div class="unit">1BR from ~722 sqft · ~$3,084–3,132</div>
+    <div class="kv"><span>Parking:</span> garage from ~$150/mo</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–6</div></div>
+    <div class="foot"><a href="https://www.windsorcommunities.com/properties/windsor-mystic-river/floorplans/" target="_blank">Floor plans ↗</a><span>(781) 973-8743</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>RE150</h3><span class="tier tier2">~10–13 min</span></div>
+    <div class="addr">150 Rivers Edge Dr, Medford <em>(map labeled "Revere")</em> · Wellington (Orange), ~0.6 mi</div>
+    <div class="unit">1BR ~700–800 sqft · from ~$2,538 (typical ~$3,586)</div>
+    <div class="kv"><span>Parking:</span> 1 space included (+$150 extra)</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–6</div></div>
+    <div class="foot"><a href="https://www.re150.com/" target="_blank">Website ↗</a><span>(781) 393-8300</span></div>
+  </div>
+
+</div>
+
+<h2>Building directory — Tier 3: Everett / Chelsea / Revere (low priority — skip if short on time)</h2>
+<div class="grid">
+
+  <div class="b">
+    <div class="row1"><h3>Vero Apartments</h3><span class="tier tier3">~13 min</span></div>
+    <div class="addr">255 Vale St, Chelsea <em>(map labeled "Everett")</em> · Silver Line SL3, ~12 min</div>
+    <div class="unit">1BR ~650–750 sqft · ~$2,129–3,594 · <b>likely income-restricted — verify eligibility</b></div>
+    <div class="kv"><span>Parking:</span> garage $100–150/mo</div>
+    <div class="hrs"><div class="hopen">Sun: 12–5</div><div class="hopen">Mon: 10–6</div></div>
+    <div class="foot"><a href="https://www.apartments.com/vero-apartments-chelsea-ma/hm25ph3/" target="_blank">Listing ↗</a><span>(857) 323-9674</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>One Webster</h3><span class="tier tier3">~13 min</span></div>
+    <div class="addr">1 Webster Ave, Chelsea · Silver Line SL3, 1 block + Blue Line shuttle</div>
+    <div class="unit">1BR ~648–700 sqft · ~$2,229–2,300 — lowest price of the set</div>
+    <div class="kv"><span>Parking:</span> lot space included · garage $50/mo</div>
+    <div class="hrs"><div class="hclosed">Sun: closed</div><div class="hopen">Mon: 9–7</div></div>
+    <div class="foot"><a href="https://www.onewebsterapts.com/" target="_blank">Website ↗</a><span>(617) 336-0217</span></div>
+  </div>
+
+  <div class="b">
+    <div class="row1"><h3>Revio Revere Beach</h3><span class="tier tier3">~20–25 min</span></div>
+    <div class="addr">646 Ocean Ave, Revere · Revere Beach (Blue), ~10 min — farthest</div>
+    <div class="unit">1BR from ~$2,880 · mid/large plans clear 600 sqft</div>
+    <div class="kv"><span>Parking:</span> garage $125/mo (max 2)</div>
+    <div class="hrs"><div class="happt">Sun: call to confirm</div><div class="happt">Mon: call</div></div>
+    <div class="foot"><a href="https://www.revioreverebeach.com/floor-plans" target="_blank">Floor plans ↗</a><span>(866) 545-3549</span></div>
+  </div>
+
+</div>
+<p class="note">*Revolution offers online-schedulable self-guided / virtual tours that may allow a Sunday visit — worth a call if you want to add it Sunday. Also on the original map: Station Landing, Sphere, AVA — all captured above. Not separately profiled: "650 Ocean Ave" &amp; "101 South St" pins (the latter is the office).</p>
+
+<!-- ============ MASTER TABLE ============ -->
+<h2>Master comparison</h2>
+<table>
+  <thead><tr><th>Building</th><th>City</th><th>Rep 1BR (unit · rent · sqft)</th><th>Nearest MBTA</th><th>Parking</th><th>Sun 8/2</th><th>Mon 8/3</th><th>Drive to office</th></tr></thead>
+  <tbody>
+    <tr><td>Verge</td><td>Somerville</td><td>#202 · $3,650 · 728 · elec incl</td><td>Union Sq/Lechmere (Green)</td><td>$460/mo</td><td>by appt</td><td>by appt</td><td>~3–5 min</td></tr>
+    <tr><td>Union 346</td><td>Somerville</td><td>none live now (studios)</td><td>Union Sq (Green)</td><td>on-site</td><td>closed</td><td>10–5</td><td>~2–4 min</td></tr>
+    <tr><td>Mason</td><td>Somerville</td><td>~854sf ~$3,000 (not live)</td><td>Union Sq (Green)</td><td>garage</td><td>by agent</td><td>by agent</td><td>~3–4 min</td></tr>
+    <tr><td>Metro9</td><td>Somerville</td><td>#513 · $3,800 · 1,006 · pkg incl</td><td>Union Sq/Lechmere (Green)</td><td>incl</td><td>by appt</td><td>by appt</td><td>~4–6 min</td></tr>
+    <tr><td>AVA North Point</td><td>Cambridge</td><td>#140 · $3,668 · 668</td><td>Lechmere (Green)</td><td>garage</td><td>9–7</td><td>9–7</td><td>~4–6 min</td></tr>
+    <tr><td>262 O'Brien #204</td><td>Cambridge</td><td>#204 · $3,150 · 753 · pkg incl</td><td>Lechmere (Green)</td><td>incl</td><td>by appt</td><td>by appt</td><td>~4–6 min</td></tr>
+    <tr><td>Zinc</td><td>Cambridge</td><td>#921 · ~$3,555+ · ~741</td><td>Lechmere (Green)</td><td>~$300/mo</td><td>closed</td><td>9–6</td><td>~4–6 min</td></tr>
+    <tr><td>Revolution</td><td>Somerville</td><td>#525 · $3,475 · 750</td><td>Assembly (Orange)</td><td>garage</td><td>closed*</td><td>9–6</td><td>~8–12 min</td></tr>
+    <tr><td>Montaje</td><td>Somerville</td><td>#0540 (TBD) · M-B3 696 $3,175</td><td>Assembly (Orange)</td><td>garage</td><td>closed</td><td>9–6</td><td>~8–12 min</td></tr>
+    <tr><td>Miscela</td><td>Somerville</td><td>#1104 (TBD) · 617 $3,405</td><td>Assembly (Orange)</td><td>~$350/mo</td><td>closed</td><td>9–6</td><td>~10 min</td></tr>
+    <tr><td>Sphere</td><td>Medford</td><td>~669sf · $3,775–3,995</td><td>Ball Sq (Green)</td><td>garage</td><td>closed</td><td>9–5</td><td>~8 min</td></tr>
+    <tr><td>Station Landing</td><td>Medford</td><td>693sf · from $2,942</td><td>Wellington (Orange)</td><td>incl</td><td>closed</td><td>8–5</td><td>~10 min</td></tr>
+    <tr><td>Windsor Mystic River</td><td>Medford</td><td>722sf · ~$3,084</td><td>Wellington (Orange)</td><td>$150/mo</td><td>closed</td><td>9–6</td><td>~10 min</td></tr>
+    <tr><td>RE150</td><td>Medford</td><td>~700sf · from $2,538</td><td>Wellington (Orange)</td><td>incl</td><td>closed</td><td>9–6</td><td>~10–13 min</td></tr>
+    <tr><td>Vero</td><td>Chelsea</td><td>~650–750sf · $2,129–3,594†</td><td>SL3 (Silver)</td><td>$100–150/mo</td><td>12–5</td><td>10–6</td><td>~13 min</td></tr>
+    <tr><td>One Webster</td><td>Chelsea</td><td>~648sf · ~$2,229</td><td>SL3 (Silver)</td><td>incl/$50</td><td>closed</td><td>9–7</td><td>~13 min</td></tr>
+    <tr><td>Revio Revere Beach</td><td>Revere</td><td>from ~$2,880</td><td>Revere Beach (Blue)</td><td>$125/mo</td><td>call</td><td>call</td><td>~20–25 min</td></tr>
+  </tbody>
+</table>
+<p class="note">Rents are "total monthly" incl. mandatory fees where the property reports it that way; broker/condo figures are asking rent. †Vero likely income-restricted. All pricing/availability shifts daily — confirm at tour. Drive times are estimates from the properties' locations vs. 101 South St; verify in your maps app the morning of.</p>
+
+</div>
+</body>
+</html>
